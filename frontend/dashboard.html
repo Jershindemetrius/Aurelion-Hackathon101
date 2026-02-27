@@ -11,12 +11,9 @@
 
 <div class="container">
     <aside class="sidebar">
-        <h2>Creator<span class="highlight">AI</span></h2>
+        <h2>Creovate<span class="highlight">AI</span></h2>
         <ul>
             <li class="active">Dashboard</li>
-            <li>Create Video</li>
-            <li>Avatars</li>
-            <li>Analytics</li>
             <li>Settings</li>
         </ul>
     </aside>
@@ -51,19 +48,19 @@
                 
                 <div class="card">
                     <h2>1. Enter Idea</h2>
-                    <textarea id="ideaInput" placeholder="E.g., A short video explaining the benefits of artificial intelligence..."></textarea>
+                    <textarea id="ideaInput" aria-label="Enter your video idea" placeholder="E.g., A short video explaining the benefits of artificial intelligence..."></textarea>
 
                     <div class="row">
-                        <select id="tone">
+                        <select id="tone" aria-label="Select video tone">
                             <option value="Educational">Educational</option>
                             <option value="Casual">Casual</option>
                             <option value="Marketing">Marketing</option>
                         </select>
-                        <select id="language">
+                        <select id="language" aria-label="Select spoken language">
                             <option value="English">English</option>
                             <option value="Tamil">Tamil</option>
                         </select>
-                        <select id="duration">
+                        <select id="duration" aria-label="Select video duration">
                             <option value="30">30 Seconds</option>
                             <option value="60">60 Seconds</option>
                         </select>
@@ -73,28 +70,28 @@
 
                 <div class="card">
                     <h2>2. Choose Your Avatar</h2>
-                    <p class="subtitle" style="margin-bottom: 15px;">Upload a face image or use your camera.</p>
+                    <p class="subtitle spacing-bottom">Upload a face image or use your camera.</p>
                     
                     <div class="row">
                         <button id="startCameraBtn" class="secondary-btn" onclick="startCamera()">📷 Use Camera</button>
-                        <input type="file" id="imageUpload" accept="image/*" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; color: white;">
+                        <input type="file" id="imageUpload" class="file-input" accept="image/*" aria-label="Upload avatar image">
                     </div>
 
-                    <div id="cameraContainer" style="display: none; margin-top: 15px; text-align: center;">
-                        <video id="webcam" autoplay playsinline style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);"></video>
-                        <button id="captureBtn" class="primary-btn" onclick="capturePhoto()" style="margin-top: 10px;">📸 Capture Photo</button>
-                        <canvas id="canvas" style="display: none;"></canvas>
+                    <div id="cameraContainer" class="hidden-preview-container">
+                        <video id="webcam" autoplay playsinline></video>
+                        <button id="captureBtn" class="primary-btn spacing-top" onclick="capturePhoto()">📸 Capture Photo</button>
+                        <canvas id="canvas" class="hidden-element"></canvas>
                     </div>
 
-                    <div id="avatarPreviewContainer" style="display: none; margin-top: 15px; text-align: center;">
-                        <img id="avatarPreview" src="" alt="Avatar Preview" style="max-width: 150px; border-radius: 8px; border: 2px solid #6366f1;">
-                        <p class="subtitle" style="margin-top: 5px; color: #10b981;">Avatar Ready!</p>
+                    <div id="avatarPreviewContainer" class="hidden-preview-container">
+                        <img id="avatarPreview" src="" alt="Avatar Preview">
+                        <p class="subtitle success-text">Avatar Ready!</p>
                     </div>
                 </div>
 
                 <div class="card">
                     <h2>3. Script Output</h2>
-                    <textarea id="scriptOutput" placeholder="Your generated script will appear here..."></textarea>
+                    <textarea id="scriptOutput" aria-label="Generated script output" placeholder="Your generated script will appear here..."></textarea>
                     <button id="generateVideoBtn" class="primary-btn" onclick="generateVideo()">Generate Avatar Video</button>
                 </div>
             </div>
