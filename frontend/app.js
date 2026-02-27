@@ -1,14 +1,21 @@
 // --- View Navigation ---
 function switchView(viewId, element) {
+    // Hide all views
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
     
+    // Show target view
+    const targetView = document.getElementById(viewId);
+    if(targetView) targetView.classList.add('active');
+    
+    // Update sidebar active states
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
     if(element) {
         element.classList.add('active');
     }
     
-    document.getElementById('notif-panel').classList.remove('show');
+    // Close notification panel if open
+    const notifPanel = document.getElementById('notif-panel');
+    if(notifPanel) notifPanel.classList.remove('show');
 }
 
 // --- Theme & Notifications ---
@@ -16,6 +23,9 @@ let isDarkMode = true;
 function toggleTheme() {
     const body = document.body;
     const themeIcon = document.getElementById('theme-icon');
+    
+    if(!themeIcon) return; // Safety check
+
     isDarkMode = !isDarkMode;
     if (isDarkMode) {
         body.classList.remove('light-mode');
@@ -33,40 +43,59 @@ let notifications = [];
 
 function toggleNotifications() {
     const panel = document.getElementById('notif-panel');
+    const badge = document.getElementById('notif-badge');
+    
+    if(!panel) return; // Safety check
+
     panel.classList.toggle('show');
     if(panel.classList.contains('show')) {
         unreadCount = 0;
-        document.getElementById('notif-badge').classList.remove('active');
-        document.getElementById('notif-badge').innerText = '0';
+        if(badge) {
+            badge.classList.remove('active');
+            badge.innerText = '0';
+        }
     }
 }
 
 // Close notifications when clicking outside the panel
 document.addEventListener('click', function(event) {
     const notifWrapper = document.querySelector('.notif-wrapper');
-    if (!notifWrapper.contains(event.target)) {
-        document.getElementById('notif-panel').classList.remove('show');
+    const notifPanel = document.getElementById('notif-panel');
+    
+    // Only run this if both elements actually exist on the page
+    if (notifWrapper && notifPanel) {
+        if (!notifWrapper.contains(event.target)) {
+            notifPanel.classList.remove('show');
+        }
     }
 });
 
 function addNotification(type) {
     const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const message = type === 'Script' ? 'Your AI script is ready for review.' : `Your AI generated ${type.toLowerCase()} is ready for download!`;
+    
     notifications.unshift({ type, message, time: timeNow });
     unreadCount++;
+    
     const badge = document.getElementById('notif-badge');
-    badge.innerText = unreadCount;
-    badge.classList.add('active');
+    if(badge) {
+        badge.innerText = unreadCount;
+        badge.classList.add('active');
+    }
     renderNotifications();
 }
 
 function renderNotifications() {
     const listEl = document.getElementById('notif-list');
+    if(!listEl) return; // Safety check
+    
     listEl.innerHTML = '';
+    
     if (notifications.length === 0) {
         listEl.innerHTML = '<div class="notif-item empty-state" style="justify-content: center; color: var(--text-muted); padding: 2rem 1rem;">No new notifications</div>';
         return;
     }
+    
     notifications.forEach(notif => {
         let iconClass = 'fa-check';
         if(notif.type === 'Video') iconClass = 'fa-film';
@@ -89,13 +118,17 @@ function renderNotifications() {
 function clearNotifications() {
     notifications = [];
     unreadCount = 0;
-    document.getElementById('notif-badge').classList.remove('active');
+    const badge = document.getElementById('notif-badge');
+    if(badge) badge.classList.remove('active');
     renderNotifications();
 }
 
 // --- AI Scripting Logic ---
 function selectLength(btn) {
-    const buttons = document.getElementById('length-selector').children;
+    const lengthSelector = document.getElementById('length-selector');
+    if(!lengthSelector) return;
+
+    const buttons = lengthSelector.children;
     for(let b of buttons) { b.classList.remove('active'); }
     btn.classList.add('active');
 }
@@ -104,7 +137,11 @@ function simulateScriptGeneration() {
     const loader = document.getElementById('script-loader');
     const resultDiv = document.getElementById('script-result');
     const textarea = document.getElementById('editable-script');
-    const lang = document.getElementById('script-lang').value;
+    const langSelect = document.getElementById('script-lang');
+    
+    if(!loader || !resultDiv || !textarea || !langSelect) return;
+
+    const lang = langSelect.value;
     
     resultDiv.style.display = 'none';
     loader.style.display = 'block';
@@ -122,23 +159,30 @@ function simulateScriptGeneration() {
 }
 
 function sendToVideoGen() {
-    const scriptText = document.getElementById('editable-script').value;
+    const textarea = document.getElementById('editable-script');
     const videoScriptBox = document.getElementById('final-video-script');
+    
+    if(!textarea || !videoScriptBox) return;
+
+    const scriptText = textarea.value;
     
     // Transfer text
     videoScriptBox.value = scriptText;
     
-    // Highlight the target box temporarily to show it updated
+    // Highlight the target box temporarily
     videoScriptBox.style.borderColor = 'var(--success)';
     setTimeout(() => videoScriptBox.style.borderColor = 'var(--border)', 1500);
 
     // Switch view to Video Gen
-    switchView('video-gen', document.querySelectorAll('.nav-item')[2]);
+    const videoNavBtn = document.querySelectorAll('.nav-item')[2];
+    switchView('video-gen', videoNavBtn);
 }
 
 // --- Simulate Image/Video Processing ---
 function simulateGeneration(outputId, type) {
     const outputArea = document.getElementById(outputId);
+    if(!outputArea) return;
+
     const loader = outputArea.querySelector('.loader');
     const statusText = outputArea.querySelector('.status-text');
 
