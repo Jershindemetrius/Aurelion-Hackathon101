@@ -31,7 +31,7 @@
 <div class="layout-container">
     <aside class="sidebar glass-panel">
         <div class="brand">
-            <div class="logo-icon"></div>
+            <img src="Creovate.png" alt="Creovate AI Logo" class="logo-icon">
             <h2>Creovate<span class="highlight">AI</span></h2>
         </div>
         <nav class="nav-menu">
@@ -93,7 +93,7 @@
                     <button id="generateScriptBtn" class="btn btn-secondary w-100 mt-2" onclick="generateScript()">✨ Generate AI Script</button>
                     
                     <div class="script-container mt-3">
-                        <div class="script-header">
+                        <div class="script-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <label style="margin:0;">Generated Script</label>
                             <button class="text-btn" onclick="openScriptModal()">🔍 Expand & Edit</button>
                         </div>
@@ -226,7 +226,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 🔴 YOUR EXACT FIREBASE CONFIG 🔴
     const firebaseConfig = {
         apiKey: "AIzaSyDqOPA5Lul3NQJofyJvUQBFZb5DAPry7UM",
         authDomain: "creovate-101.firebaseapp.com",
@@ -255,15 +254,10 @@
                     const data = userDoc.data();
                     document.getElementById('sidebarName').innerText = data.name || user.name;
                     document.getElementById('sidebarPlan').innerText = data.plan || "Premium Plan";
-
                     const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || user.name)}&background=6366f1&color=fff`;
                     const avatarImg = document.getElementById('sidebarAvatar');
                     avatarImg.src = data.avatar || defaultAvatar;
                     avatarImg.style.display = "block"; 
-                } else {
-                    document.getElementById('sidebarPlan').innerText = "Premium Plan";
-                    document.getElementById('sidebarAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff`;
-                    document.getElementById('sidebarAvatar').style.display = "block";
                 }
             } catch (error) {
                 console.error("Firebase Error:", error);

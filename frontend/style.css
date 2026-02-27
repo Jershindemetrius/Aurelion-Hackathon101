@@ -1,6 +1,6 @@
 :root {
-    --bg-base: #070913; /* Deeper dark background */
-    --bg-surface: rgba(19, 27, 44, 0.6); /* Glass effect */
+    --bg-base: #070913; 
+    --bg-surface: rgba(19, 27, 44, 0.6); 
     --bg-surface-hover: rgba(26, 36, 56, 0.8);
     --primary: #6366f1;
     --primary-hover: #818cf8;
@@ -27,16 +27,13 @@ body {
     overflow-x: hidden;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
 
-/* --- Layout --- */
 .layout-container { display: flex; min-height: 100vh; }
 
-/* Glassmorphism Panel */
 .glass-panel {
     background: var(--bg-surface);
     backdrop-filter: blur(16px);
@@ -61,9 +58,14 @@ body {
     max-width: 1500px;
 }
 
-/* --- Sidebar --- */
+/* --- LOGO FIX --- */
 .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 50px; }
-.logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), #a855f7); border-radius: 10px; box-shadow: var(--glow-primary); }
+.logo-icon { 
+    width: 40px; 
+    height: 40px; 
+    object-fit: contain; 
+    background: transparent; 
+}
 .brand h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
 .highlight { color: var(--primary); }
 
@@ -79,17 +81,14 @@ body {
 .user-name { font-size: 0.95rem; font-weight: 600; }
 .user-plan { font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
-/* --- Header --- */
 .topbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
 .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 6px; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .page-subtitle { color: var(--text-muted); font-size: 1rem; }
 
-/* --- Workspace Grid --- */
 .workspace-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px; align-items: start; }
 .panel-column { display: flex; flex-direction: column; gap: 28px; }
 .sticky-column { position: sticky; top: 40px; }
 
-/* --- Cards --- */
 .card { border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
 .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); }
 
@@ -97,7 +96,6 @@ body {
 .step-badge { background: linear-gradient(135deg, var(--primary), #818cf8); color: white; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; box-shadow: 0 4px 10px rgba(99,102,241,0.4); }
 .card-header h3 { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.3px; }
 
-/* --- Forms --- */
 .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; flex: 1; }
 label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 input[type="text"], input[type="datetime-local"], select, textarea {
@@ -109,7 +107,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); box-sh
 .row { display: flex; gap: 20px; }
 .mt-2 { margin-top: 16px; } .mt-3 { margin-top: 24px; } .w-100 { width: 100%; }
 
-/* --- Buttons --- */
 .btn {
     padding: 14px 24px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: none; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden;
 }
@@ -131,7 +128,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); box-sh
 .text-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-weight: 600; font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; transition: 0.2s; }
 .text-btn:hover { background: rgba(99,102,241,0.1); }
 
-/* --- Avatars --- */
 .camera-ui { background: #000; border-radius: var(--radius-sm); overflow: hidden; position: relative; border: 1px solid var(--border-color); }
 video#webcam { width: 100%; display: block; }
 .snap-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); border-radius: 30px; padding: 12px 24px; }
@@ -142,7 +138,6 @@ video#webcam { width: 100%; display: block; }
 .library-thumb { width: 65px; height: 65px; border-radius: 12px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; opacity: 0.8; }
 .library-thumb:hover { border-color: var(--primary); transform: translateY(-4px); opacity: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
-/* --- Advanced Video Player --- */
 .player-container {
     background-color: #000;
     border-radius: var(--radius-md);
@@ -159,12 +154,11 @@ video#webcam { width: 100%; display: block; }
 
 .rendered-video {
     width: 100%;
-    max-height: 500px; /* Prevents vertical videos from breaking the layout */
+    max-height: 500px;
     object-fit: contain;
     background: #000;
 }
 
-/* HDR filter class injected by JS */
 .hdr-enhanced { filter: contrast(1.15) saturate(1.2) brightness(1.05); }
 
 .processing-container { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
@@ -176,13 +170,11 @@ video#webcam { width: 100%; display: block; }
 
 .error-box { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 20px; border-radius: var(--radius-sm); text-align: left; width: 90%; }
 
-/* --- Loaders --- */
 .loader { border: 3px solid rgba(255,255,255,0.1); border-bottom-color: var(--primary); border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
 .btn-loader { width: 20px; height: 20px; border-width: 2px; }
 .large-loader { width: 50px; height: 50px; border-width: 4px; box-shadow: var(--glow-primary); }
 @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* --- MODAL (Script Editor) --- */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -216,13 +208,11 @@ video#webcam { width: 100%; display: block; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(40px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 
-/* --- Subtitles WebVTT --- */
 video::cue {
     background-color: rgba(0, 0, 0, 0.8); color: white; font-family: 'Plus Jakarta Sans', sans-serif;
     font-weight: 700; font-size: 1.2rem; padding: 6px 12px; border-radius: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* Responsive adjustments */
 @media (max-width: 1200px) {
     .workspace-grid { grid-template-columns: 1fr; }
     .sticky-column { position: relative; top: 0; }

@@ -1,7 +1,6 @@
 let selectedAvatarBase64 = null; 
 let finalVideoUrl = null;
 
-// --- DOM Elements ---
 const cameraContainer = document.getElementById("cameraContainer");
 const webcam = document.getElementById("webcam");
 const canvas = document.getElementById("canvas");
@@ -10,10 +9,9 @@ const avatarPreview = document.getElementById("avatarPreview");
 const imageUpload = document.getElementById("imageUpload");
 const libraryGrid = document.getElementById("libraryGrid");
 
-// Initialize Avatar Library from LocalStorage
 let savedAvatars = JSON.parse(localStorage.getItem('creovate_avatars')) || [];
 renderLibrary();
-updateVoiceOptions(); // Initialize voice dropdown on load
+updateVoiceOptions(); 
 
 imageUpload.addEventListener("change", function(event) {
     const file = event.target.files[0];
@@ -27,7 +25,6 @@ imageUpload.addEventListener("change", function(event) {
     }
 });
 
-// --- Camera & Avatar Logic ---
 async function startCamera() {
     try {
         cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -82,12 +79,11 @@ function renderLibrary() {
     });
 }
 
-// --- Dynamic Voice Selection ---
 function updateVoiceOptions() {
     const language = document.getElementById("language").value;
     const voiceSelect = document.getElementById("voiceModel");
     
-    voiceSelect.innerHTML = ""; // Clear existing
+    voiceSelect.innerHTML = ""; 
     
     if (language === "English") {
         voiceSelect.innerHTML += `<option value="en-US-JennyNeural">Jenny (Professional Female)</option>`;
@@ -99,7 +95,6 @@ function updateVoiceOptions() {
     }
 }
 
-// --- Expandable Script Modal Logic ---
 const scriptModal = document.getElementById("scriptModal");
 const mainScriptOutput = document.getElementById("scriptOutput");
 const modalScriptOutput = document.getElementById("scriptModalOutput");
@@ -128,7 +123,6 @@ function updateWordCount() {
     wordCountDisplay.innerText = `${count} words`;
 }
 
-// --- API Functions ---
 async function generateScript() {
     const idea = document.getElementById("ideaInput").value;
     const tone = document.getElementById("tone").value;
@@ -146,13 +140,7 @@ async function generateScript() {
         const response = await fetch("http://localhost:5000/generate-script", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-    script: script,
-    imageBase64: selectedAvatarBase64,
-    language: language,
-    voice: voice, // <--- This is the new parameter
-    format: format
-})
+            body: JSON.stringify({ idea, tone, language, duration })
         });
         const data = await response.json();
         mainScriptOutput.value = data.success ? data.script : "Error: " + data.message;
@@ -178,7 +166,7 @@ async function generateVideo() {
     if (!selectedAvatarBase64) return alert("Please select or capture an avatar image!");
 
     btn.disabled = true;
-    btn.innerHTML = "🎬 Rendering Pipeline Active... (Takes ~30s)";
+    btn.innerHTML = "🎬 Rendering Pipeline Active... (Takes ~30-60s)";
     if (downloadBtn) downloadBtn.disabled = true;
     
     videoBox.innerHTML = `
@@ -208,12 +196,11 @@ async function generateVideo() {
 
         finalVideoUrl = data.result_url;
         
-        // Advanced video rendering logic to respect format
-        const aspectClass = format === 'portrait' ? 'video-portrait' : (format === 'square' ? 'video-square' : 'video-landscape');
-
+        // VIDEO FIX: Proper inline playback settings
         videoBox.innerHTML = `
-            <video class="rendered-video ${aspectClass}" controls crossorigin="anonymous" autoplay>
+            <video controls playsinline preload="metadata" style="width:100%; max-height: 400px; border-radius: 8px; background: #000;">
                 <source src="${finalVideoUrl}" type="video/mp4">
+                Your browser does not support the video tag.
             </video>
         `;
         
@@ -235,7 +222,6 @@ async function generateVideo() {
     }
 }
 
-// --- Post-Production Functions ---
 function updateStatus(message) {
     const status = document.getElementById("editStatus");
     status.innerText = message;
@@ -305,22 +291,33 @@ function addBGM() {
     }
 }
 
-// --- Publishing Functions ---
-function generateCaption() {
+// --- REAL NLP CAPTION GENERATOR ---
+async function generateCaption() {
+    const script = mainScriptOutput.value;
     const box = document.getElementById("captionBox");
     const platform = document.getElementById("socialPlatform").value;
     
-    box.value = "🤖 Analyzing context with NLP...";
-    
-    setTimeout(() => {
-        if (platform === 'instagram') {
-            box.value = "🚀 AI Avatars are shifting the paradigm! Watch this breakdown of the latest tools built directly in Creovate. \n\n#AI #CreatorEconomy #FutureOfWork #Reels";
-        } else if (platform === 'linkedin') {
-            box.value = "The enterprise creator economy is adopting automation rapidly. Here is my latest analysis on AI-driven workflows generated entirely via prompt-to-video architectures.\n\n#ArtificialIntelligence #Innovation #TechTrends";
+    if (!script.trim()) return alert("Please generate a video script first!");
+
+    box.value = "🤖 Analyzing context with NLP (Featherless AI)...";
+
+    try {
+        const response = await fetch("http://localhost:5000/generate-caption", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ script: script, platform: platform })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            box.value = data.caption;
         } else {
-            box.value = "Next-Gen AI Avatar workflow explained! Subscribe for more tech experiments. #Shorts #AI #Tech";
+            box.value = "⚠️ NLP Generation failed.";
         }
-    }, 800);
+    } catch (error) {
+        box.value = "⚠️ Failed to connect to NLP Engine.";
+    }
 }
 
 function schedulePost() {
@@ -328,6 +325,5 @@ function schedulePost() {
     const platform = document.getElementById("socialPlatform").value;
     
     if (!finalVideoUrl || !dateVal) return alert("Please ensure the video is rendered and a date is selected.");
-
-    alert(`✅ API Call simulated: Video successfully scheduled for ${platform.toUpperCase()} via Creovate automation!`);
+    alert(`✅ API Call simulated: Video successfully scheduled for ${platform.toUpperCase()}!`);
 }

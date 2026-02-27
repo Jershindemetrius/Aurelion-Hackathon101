@@ -11,20 +11,20 @@ app.use(express.json({ limit: '50mb' }));
 
 const PORT = process.env.PORT || 5000;
 
-// 1. Generate Script (Featherless)
+// 1. Generate Script (OpenAI)
 app.post('/generate-script', async (req, res) => {
     const { idea, tone, language, duration } = req.body;
     const prompt = `Write a short script for a ${duration}-second video about: "${idea}". Tone: ${tone}. Language MUST be ${language}. Only output spoken words. Do not include stage directions.`;
 
     try {
-        const response = await fetch('https://api.featherless.ai/v1/chat/completions', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.FEATHERLESS_API_KEY}`,
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: "mistralai/Mistral-7B-Instruct-v0.2",
+                model: "gpt-3.5-turbo", 
                 messages: [{ role: "user", content: prompt }]
             })
         });
@@ -33,6 +33,7 @@ app.post('/generate-script', async (req, res) => {
         if (data.choices && data.choices.length > 0) {
             res.json({ success: true, script: data.choices[0].message.content.replace(/["*]/g, '') });
         } else {
+            console.error("OpenAI Error:", data);
             res.status(400).json({ success: false, message: "AI response failed." });
         }
     } catch (error) {
@@ -40,14 +41,43 @@ app.post('/generate-script', async (req, res) => {
     }
 });
 
-// 2. Generate Video using D-ID
+// 2. Real NLP Caption Generation (OpenAI)
+app.post('/generate-caption', async (req, res) => {
+    const { script, platform } = req.body;
+    const prompt = `You are an expert social media manager. Read this video script: "${script}". Write a highly engaging, viral caption optimized for ${platform}. Include 3-4 relevant hashtags. Only output the caption text.`;
+
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo", 
+                messages: [{ role: "user", content: prompt }]
+            })
+        });
+
+        const data = await response.json();
+        if (data.choices && data.choices.length > 0) {
+            res.json({ success: true, caption: data.choices[0].message.content.replace(/["*]/g, '') });
+        } else {
+            console.error("OpenAI Error:", data);
+            res.status(400).json({ success: false, message: "NLP failed." });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// 3. Generate Video using D-ID
 app.post('/generate-video', async (req, res) => {
-    const { script, imageBase64, language } = req.body;
+    const { script, imageBase64, language, voice } = req.body;
 
     try {
         console.log("⏳ Starting D-ID Generation Workflow...");
         
-        // A: Upload Image to ImgBB (D-ID needs a public URL)
         const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
         const form = new URLSearchParams();
         form.append('key', process.env.IMGBB_API_KEY);
@@ -58,14 +88,11 @@ app.post('/generate-video', async (req, res) => {
         
         if (!imgbbData.success) throw new Error("Image upload to ImgBB failed. Check API key.");
         const imageUrl = imgbbData.data.url;
-        console.log("✅ Image hosted:", imageUrl);
 
-        // B: Setup D-ID Authentication & Voice (Fixed to match your .env variable)
         const didAuth = `Basic ${Buffer.from(process.env.D_ID_API_KEY).toString('base64')}`;
-        const voiceId = language.includes("Tamil") ? "ta-IN-PallaviNeural" : "en-US-JennyNeural";
+        const voiceId = voice || (language.includes("Tamil") ? "ta-IN-PallaviNeural" : "en-US-JennyNeural");
 
-        // C: Create Talk on D-ID
-        console.log("🎬 Requesting video from D-ID...");
+        console.log(`🎬 Requesting video from D-ID using voice: ${voiceId}...`);
         const talkResponse = await fetch('https://api.d-id.com/talks', {
             method: 'POST',
             headers: {
@@ -76,10 +103,13 @@ app.post('/generate-video', async (req, res) => {
                 source_url: imageUrl,
                 script: {
                     type: "text",
-                    input: script.substring(0, 500), // Safety limit for credits
+                    input: script.substring(0, 500),
                     provider: { type: "microsoft", voice_id: voiceId }
                 },
-                config: { fluent: true, pad_audio: 0 }
+                config: { 
+                    stitch: true,  // <-- FIX: Replaced 'fluent: true' with 'stitch: true'
+                    pad_audio: 0.0 
+                }
             })
         });
 
@@ -87,12 +117,11 @@ app.post('/generate-video', async (req, res) => {
         if (!talkData.id) throw new Error("Failed to create D-ID Talk: " + JSON.stringify(talkData));
         const talkId = talkData.id;
 
-        // D: Poll D-ID until the video is finished rendering
         console.log(`🔄 Polling D-ID for completion (ID: ${talkId})...`);
         let finalVideoUrl = null;
         
-        for (let i = 0; i < 30; i++) { // Try for ~60 seconds
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s
+        for (let i = 0; i < 30; i++) { 
+            await new Promise(resolve => setTimeout(resolve, 2000)); 
             
             const pollResponse = await fetch(`https://api.d-id.com/talks/${talkId}`, {
                 method: 'GET',
