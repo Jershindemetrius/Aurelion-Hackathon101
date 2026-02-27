@@ -3,167 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creovate | AI Creator Dashboard</title>
+    <title>Creovate | Studio</title>
+    <script>if(localStorage.getItem('creovate_theme') === 'light') document.documentElement.classList.add('light-mode');</script>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="theme-body">
 
-<div class="container">
+<div class="layout-container">
     <aside class="sidebar">
-        <h2>Creovate<span class="highlight">AI</span></h2>
-        <ul>
-            <li class="active">Dashboard</li>
-            <li>Create Video</li>
-            <li>Avatar Library</li>
-            <li>Analytics</li>
-            <li>Settings</li>
-        </ul>
-        <div class="sidebar-footer">
-            <p style="font-size: 0.8rem; color: #64748b;">AURELION 2026 Build</p>
+        <div class="brand">
+            <div class="logo-icon"></div>
+            <h2>Creovate<span class="highlight">AI</span></h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active">🎬 Studio</a>
+            <a href="#" class="nav-item">📚 Avatar Library</a>
+            <a href="#" class="nav-item">📊 Analytics</a>
+            <a href="settings.html" class="nav-item">⚙️ Settings</a>
+        </nav>
+        <div class="user-profile">
+            <img src="" alt="Profile" class="user-avatar" id="sidebarAvatar" style="display: none;">
+            <div class="user-info">
+                <span class="user-name" id="sidebarName">Loading Profile...</span>
+                <span class="user-plan" id="sidebarPlan">Connecting to database...</span>
+            </div>
         </div>
     </aside>
 
-    <main class="main">
-        <header class="header">
+    <main class="main-content">
+        <header class="topbar">
             <div>
-                <h1>End-to-End Content Workflow</h1>
-                <p class="subtitle">Idea → Script → Avatar Video → Post-Production → Publish</p>
+                <h1 class="page-title">Create New Video</h1>
+                <p class="page-subtitle">End-to-End Workflow: Script to Social Publishing</p>
             </div>
-            <button class="new-btn">+ New Project</button>
+            <button class="btn btn-outline" onclick="window.location.reload()">Discard</button>
         </header>
 
-        <section class="stats">
-            <div class="stat-card">
-                <h3>142K</h3>
-                <p>Total Views (All Platforms)</p>
-            </div>
-            <div class="stat-card">
-                <h3>8.4%</h3>
-                <p>Avg. Engagement Rate</p>
-            </div>
-            <div class="stat-card">
-                <h3>12</h3>
-                <p>Tamil Videos Published</p>
-            </div>
-        </section>
-
-        <div class="grid-layout">
-            <div class="input-section">
-                <div class="card">
-                    <h2>1. AI Scripting Engine</h2>
-                    <textarea id="ideaInput" placeholder="E.g., A quick educational video on why AI avatars are the future..."></textarea>
-                    
+        <div class="workspace-grid">
+            <div class="panel-column">
+                <section class="card">
+                    <div class="card-header"><span class="step-badge">1</span><h3>Content & Script</h3></div>
+                    <div class="input-group"><label>What is the video about?</label><input type="text" id="ideaInput" placeholder="e.g., 3 Tips for Productivity..."></div>
                     <div class="row">
-                        <select id="tone">
-                            <option value="Educational">Educational</option>
-                            <option value="Casual">Casual</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Storytelling">Storytelling</option>
-                        </select>
-                        <select id="language">
-                            <option value="English">English</option>
-                            <option value="Tamil">Tamil (தமிழ்) - Common Voice</option>
-                        </select>
-                        <select id="duration">
-                            <option value="30">30 Seconds</option>
-                            <option value="60">60 Seconds</option>
-                            <option value="90">90 Seconds</option>
-                        </select>
+                        <div class="input-group"><label>Tone</label><select id="tone"><option>Professional</option><option>Energetic</option><option>Educational</option></select></div>
+                        <div class="input-group"><label>Duration</label><select id="duration"><option value="15">15 Seconds</option><option value="30">30 Seconds</option></select></div>
                     </div>
-                    <button id="generateScriptBtn" class="primary-btn" onclick="generateScript()">Generate Script</button>
-                </div>
+                    <button id="generateScriptBtn" class="btn btn-secondary" onclick="generateScript()">✨ Generate AI Script</button>
+                    <textarea id="scriptOutput" class="script-box" placeholder="Your generated script will appear here."></textarea>
+                </section>
 
-                <div class="card">
-                    <h2>2. Avatar Creation & Management</h2>
-                    <p class="subtitle" style="margin-bottom: 15px;">UGC-style realism with accessory support.</p>
-                    
-                    <div class="row">
-                        <button id="startCameraBtn" class="secondary-btn" onclick="startCamera()">📷 Camera</button>
-                        <input type="file" id="imageUpload" accept="image/*" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; color: white;">
+                <section class="card">
+                    <div class="card-header"><span class="step-badge">2</span><h3>Digital Avatar</h3></div>
+                    <div class="avatar-controls row">
+                        <label class="btn btn-outline" style="flex:1; text-align:center;">📁 Upload Photo<input type="file" id="imageUpload" accept="image/*" style="display: none;"></label>
+                        <button class="btn btn-outline" style="flex:1;" onclick="startCamera()">📷 Use Camera</button>
                     </div>
-
-                    <div class="checkbox-row" style="margin-top: 10px; margin-bottom: 10px;">
-                        <input type="checkbox" id="hasCoolers" checked>
-                        <label for="hasCoolers" class="subtitle" style="color: #f8fafc;">Optimize for Accessories (Cooling Glasses)</label>
-                    </div>
-
-                    <div id="cameraContainer" style="display: none; margin-top: 15px; text-align: center;">
-                        <video id="webcam" autoplay playsinline style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);"></video>
-                        <button id="captureBtn" class="primary-btn" onclick="capturePhoto()" style="margin-top: 10px;">📸 Capture</button>
+                    <div id="cameraContainer" class="camera-ui" style="display: none;">
+                        <video id="webcam" autoplay playsinline></video>
+                        <button class="btn btn-primary snap-btn" onclick="capturePhoto()">📸 Capture</button>
                         <canvas id="canvas" style="display: none;"></canvas>
                     </div>
-
-                    <div id="avatarPreviewContainer" style="display: none; margin-top: 15px; text-align: center;">
-                        <img id="avatarPreview" src="" alt="Avatar Preview" style="max-width: 150px; border-radius: 8px; border: 2px solid #6366f1;">
-                        <button class="secondary-btn" style="margin-top: 10px;" onclick="saveToLibrary()">💾 Save to Library</button>
+                    <div id="avatarPreviewContainer" class="preview-ui" style="display: none;">
+                        <img id="avatarPreview" alt="Selected Avatar">
+                        <button class="btn btn-outline btn-sm" onclick="saveToLibrary()">💾 Save to Library</button>
                     </div>
+                    <div class="library-section">
+                        <label>Saved Avatars</label>
+                        <div id="libraryGrid" class="avatar-grid"></div>
+                    </div>
+                </section>
 
-                    <div class="avatar-library" id="avatarLibrary" style="margin-top: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <p class="subtitle">Avatar Library</p>
-                            <span class="badge">Fine-tuned: VoxCeleb / LRS3</span>
+                <section class="card">
+                    <div class="card-header"><span class="step-badge">3</span><h3>Video Settings</h3></div>
+                    <div class="row">
+                        <div class="input-group"><label>Language & Voice</label><select id="language"><option value="English">English</option><option value="Tamil">Tamil</option></select></div>
+                        <div class="input-group"><label>Format</label><select id="videoFormat"><option value="portrait">9:16 (Reels)</option><option value="landscape">16:9 (YouTube)</option></select></div>
+                    </div>
+                    <button id="generateVideoBtn" class="btn btn-primary btn-large" onclick="generateVideo()">🎬 Generate Avatar Video</button>
+                </section>
+            </div>
+
+            <div class="panel-column sticky-column">
+                <section class="card video-player-card">
+                    <div class="card-header"><h3>Result & Post-Production</h3></div>
+                    <div id="videoPreview" class="player-container">
+                        <div class="placeholder-content"><span class="icon">🎥</span><p>Your generated video will appear here</p></div>
+                    </div>
+                    <div class="tools-grid">
+                        <button class="btn btn-outline tool-btn" onclick="addSubtitles()">💬 Add Subtitles</button>
+                        <button class="btn btn-outline tool-btn" onclick="enhanceVideo()">✨ Enhance Colors</button>
+                        <button class="btn btn-outline tool-btn" onclick="addBGM()">🎵 Add BGM</button>
+                    </div>
+                    <p id="editStatus" class="status-text"></p>
+                    <button id="downloadBtn" class="btn btn-primary w-100" style="margin-top: 15px;" disabled>⬇️ Download Video (MP4)</button>
+                </section>
+
+                <section class="card">
+                    <div class="card-header"><h3>Publishing</h3></div>
+                    <div class="row">
+                        <div class="input-group"><label>Platform</label><select id="socialPlatform"><option value="instagram">Instagram Reels</option><option value="linkedin">LinkedIn</option></select></div>
+                        <div class="input-group"><label>Schedule</label><input type="datetime-local" id="scheduleDate" class="date-input"></div>
+                    </div>
+                    <div class="input-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label style="margin: 0;">Social Caption</label>
+                            <button class="text-btn" onclick="generateCaption()">✨ Auto-Write</button>
                         </div>
-                        <div class="library-grid" id="libraryGrid"></div>
+                        <textarea id="captionBox" placeholder="Optimized caption..."></textarea>
                     </div>
-                </div>
-            </div>
-
-            <div class="output-section">
-                <div class="card">
-                    <h2>3. Editable Output & Format Setup</h2>
-                    <textarea id="scriptOutput" placeholder="Your generated script will appear here. Edit before generating."></textarea>
-                    
-                    <div class="row" style="margin-bottom: 15px;">
-                        <select id="videoFormat">
-                            <option value="vertical">Vertical (9:16) - Instagram Reels / Shorts</option>
-                            <option value="square">Square (1:1) - LinkedIn</option>
-                        </select>
-                    </div>
-                    
-                    <button id="generateVideoBtn" class="primary-btn" onclick="generateVideo()">Generate Avatar Video</button>
-                </div>
-
-                <div class="card video-card">
-                    <h2>4. Avatar-to-Video Generation</h2>
-                    <div id="videoPreview" class="video-box">
-                        <p class="placeholder-text">Video preview will appear here</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-layout" style="margin-top: 25px;">
-            <div class="card">
-                <h2>5. Manual Edit Layer</h2>
-                <p class="subtitle" style="margin-bottom: 15px;">Post-production tools.</p>
-                <div class="row">
-                    <button class="secondary-btn" onclick="mockEdit('Overlaying Subtitles...')">💬 Add Subtitles</button>
-                    <button class="secondary-btn" onclick="mockEdit('Trimming Video...')">✂️ Trim (0:00 - 0:30)</button>
-                    <button class="secondary-btn" onclick="mockEdit('Replacing Background...')">🖼️ Change BG</button>
-                </div>
-                <button id="downloadBtn" class="primary-btn" style="margin-top: 10px;" disabled>⬇️ Download MP4</button>
-                <p id="editStatus" style="color: var(--secondary); margin-top: 10px; font-size: 0.9rem;"></p>
-            </div>
-
-            <div class="card">
-                <h2>6. Social Publishing (Automated)</h2>
-                <div class="row">
-                    <select id="socialPlatform">
-                        <option value="instagram">Instagram Reels</option>
-                        <option value="youtube">YouTube Shorts</option>
-                        <option value="linkedin">LinkedIn</option>
-                    </select>
-                    <input type="datetime-local" id="scheduleDate" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px;">
-                </div>
-                <button class="secondary-btn" onclick="generateCaption()" style="margin-bottom: 10px;">✨ Auto-Generate Caption</button>
-                <textarea id="captionBox" placeholder="Platform-optimized caption with hashtags..." style="height: 60px;"></textarea>
-                <button class="primary-btn" onclick="schedulePost()">🚀 Schedule Post</button>
+                    <button class="btn btn-primary w-100 mt-2" onclick="schedulePost()">🚀 Schedule Post</button>
+                </section>
             </div>
         </div>
     </main>
 </div>
 
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // 🔴 REPLACE WITH YOUR FIREBASE CONFIG 🔴
+       const firebaseConfig = {
+  apiKey: "AIzaSyDqOPA5Lul3NQJofyJvUQBFZb5DAPry7UM",
+  authDomain: "creovate-101.firebaseapp.com",
+  projectId: "creovate-101",
+  storageBucket: "creovate-101.firebasestorage.app",
+  messagingSenderId: "479670114683",
+  appId: "1:479670114683:web:0d5fab68e95294a94445de",
+  measurementId: "G-X2VWJZQEK5"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Get Logged In User from the login.html Session
+    const userStr = localStorage.getItem('currentUser');
+    
+    if (!userStr) {
+        window.location.href = "login.html"; // Kickout unauthenticated
+    } else {
+        const user = JSON.parse(userStr);
+        document.getElementById('sidebarName').innerText = user.name || "Creator";
+        
+        // Fetch User Database Profile from Firestore using their Email
+        const loadProfile = async () => {
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.email));
+                
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    
+                    document.getElementById('sidebarName').innerText = data.name || user.name;
+                    document.getElementById('sidebarPlan').innerText = data.plan || "Premium Plan";
+
+                    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || user.name)}&background=6366f1&color=fff`;
+                    const avatarImg = document.getElementById('sidebarAvatar');
+                    avatarImg.src = data.avatar || defaultAvatar;
+                    avatarImg.style.display = "block"; 
+                } else {
+                    document.getElementById('sidebarPlan').innerText = "Premium Plan";
+                    document.getElementById('sidebarAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff`;
+                    document.getElementById('sidebarAvatar').style.display = "block";
+                }
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                document.getElementById('sidebarPlan').innerText = "Database Offline";
+            }
+        };
+        loadProfile();
+    }
+</script>
 <script src="script.js"></script>
 </body>
 </html>
