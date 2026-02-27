@@ -1,3 +1,5 @@
+// public/script.js
+
 // ===============================
 // Camera & Avatar Logic
 // ===============================
@@ -10,7 +12,6 @@ const avatarPreview = document.getElementById("avatarPreview");
 const imageUpload = document.getElementById("imageUpload");
 let cameraStream = null;
 
-// Handle File Upload
 imageUpload.addEventListener("change", function(event) {
     const file = event.target.files[0];
     if (file) {
@@ -23,7 +24,6 @@ imageUpload.addEventListener("change", function(event) {
     }
 });
 
-// Start Webcam
 async function startCamera() {
     try {
         cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -31,12 +31,11 @@ async function startCamera() {
         cameraContainer.style.display = "block";
         avatarPreviewContainer.style.display = "none";
     } catch (err) {
-        alert("Could not access camera. Please check your permissions or ensure you are running on localhost.");
+        alert("Could not access camera. Please check your permissions.");
         console.error("Camera Error:", err);
     }
 }
 
-// Capture Photo
 function capturePhoto() {
     canvas.width = webcam.videoWidth;
     canvas.height = webcam.videoHeight;
@@ -47,7 +46,6 @@ function capturePhoto() {
     stopCamera();
 }
 
-// Stop Webcam
 function stopCamera() {
     if (cameraStream) {
         cameraStream.getTracks().forEach(track => track.stop());
@@ -55,7 +53,6 @@ function stopCamera() {
     cameraContainer.style.display = "none";
 }
 
-// Set Avatar Preview
 function setAvatar(base64Data) {
     selectedAvatarBase64 = base64Data;
     avatarPreview.src = base64Data;
@@ -63,7 +60,7 @@ function setAvatar(base64Data) {
 }
 
 // ===============================
-// Generate Script (Featherless AI)
+// Generate Script
 // ===============================
 async function generateScript() {
     const idea = document.getElementById("ideaInput").value;
@@ -80,10 +77,10 @@ async function generateScript() {
 
     btn.disabled = true;
     btn.innerText = "Generating Script...";
-    output.value = "Writing script...";
+    output.value = "Writing script... (Connecting to AI)";
 
     try {
-        // Changed to relative URL so it works seamlessly with the served frontend
+        // Because the frontend is served by the backend, we use relative URLs
         const response = await fetch("/generate-script", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -98,7 +95,7 @@ async function generateScript() {
             output.value = "Error: " + data.message;
         }
     } catch (error) {
-        output.value = "Failed to connect to server. Ensure the backend is running.";
+        output.value = "Failed to connect to backend server. Is Node.js running?";
         console.error(error);
     } finally {
         btn.disabled = false;
@@ -107,7 +104,7 @@ async function generateScript() {
 }
 
 // ===============================
-// Generate Video (Demo Mode)
+// Generate Video
 // ===============================
 async function generateVideo() {
     const script = document.getElementById("scriptOutput").value;
@@ -115,8 +112,12 @@ async function generateVideo() {
     const downloadBtn = document.getElementById("downloadBtn");
     const btn = document.getElementById("generateVideoBtn");
 
-    if (!script.trim() || script === "Writing script..." || script.startsWith("Error:") || script.startsWith("Failed")) {
+    if (!script.trim() || script.startsWith("Error:") || script.startsWith("Failed") || script === "Writing script... (Connecting to AI)") {
         alert("Please generate a valid script first!");
+        return;
+    }
+    if (!selectedAvatarBase64) {
+        alert("Please select or capture an avatar image first!");
         return;
     }
 
@@ -127,12 +128,11 @@ async function generateVideo() {
     videoBox.innerHTML = `
         <div style="text-align: center;">
             <div class="loader"></div>
-            <p style="margin-top: 10px; color: #94a3b8;">Rendering AI Avatar Video...</p>
+            <p style="margin-top: 10px; color: #94a3b8;">Uploading avatar and sending to D-ID...<br>This takes up to 30-60 seconds.</p>
         </div>
     `;
 
     try {
-        // Changed to relative URL
         const response = await fetch("/generate-video", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -142,9 +142,11 @@ async function generateVideo() {
             })
         });
 
-        if (!response.ok) throw new Error(`Server error`);
         const data = await response.json();
-        if (!data.success || !data.videoUrl) throw new Error("Invalid format");
+
+        if (!data.success) {
+            throw new Error(data.message || "Unknown server error");
+        }
 
         videoBox.innerHTML = `
             <video controls width="100%" style="border-radius: 8px; max-height: 100%;">
@@ -159,8 +161,8 @@ async function generateVideo() {
     } catch (error) {
         console.error(error);
         videoBox.innerHTML = `
-            <div style="text-align: center; color: #ef4444;">
-                <p>⚠️ Failed to connect to server.</p>
+            <div style="text-align: center; color: #ef4444; padding: 20px;">
+                <p>⚠️ ${error.message}</p>
             </div>
         `;
     } finally {
