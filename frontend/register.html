@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Creovate AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === RESET & BASE STYLES (Matches Login Page) === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8fafc;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* === FLUID ANIMATED BACKGROUND === */
+        .mesh-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out alternate;
+            opacity: 0.8;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: #ffb199;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 600px;
+            height: 600px;
+            background: #a18cd1;
+            bottom: -200px;
+            right: -100px;
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* === GLASSMORPHISM CARD === */
+        .register-card {
+            width: 100%;
+            max-width: 480px; /* Slightly wider for register form */
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            z-index: 10;
+        }
+
+        .header-text {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo {
+            height: 42px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text h1 {
+            color: #1e293b;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .header-text p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* === FORM ELEMENTS === */
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            flex: 1;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #334155;
+            margin-left: 4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.9);
+            color: #0f172a;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+        }
+
+        /* === BUTTONS === */
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer-links {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* === MESSAGES === */
+        #statusMessage {
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #ef4444;
+            border: 1px solid #fca5a5;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #86efac;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mesh-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="register-card">
+        <div class="header-text">
+            <img src="creovateai.png" alt="Creovate AI" class="logo">
+            <h1>Create your Studio</h1>
+            <p>Join the next generation of AI content creators</p>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <form id="registerForm">
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label for="fullName">Creator Name</label>
+                <div class="input-wrapper">
+                    <input type="text" id="fullName" placeholder="e.g. Dasandcode" required>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" placeholder="creator@example.com" required autocomplete="email">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="registerBtn">Create Account</button>
+        </form>
+
+        <div class="footer-links">
+            Already have an account? <a href="login.html">Sign in here</a>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. Import Firebase Core and Firestore functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        // NOTE: We import setDoc here, which is crucial for our merge strategy
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // 2. YOUR FIREBASE CONFIG (Match this with your login page)
+        const firebaseConfig = {
+  apiKey: "AIzaSyDqOPA5Lul3NQJofyJvUQBFZb5DAPry7UM",
+  authDomain: "creovate-101.firebaseapp.com",
+  projectId: "creovate-101",
+  storageBucket: "creovate-101.firebasestorage.app",
+  messagingSenderId: "479670114683",
+  appId: "1:479670114683:web:0d5fab68e95294a94445de",
+  measurementId: "G-X2VWJZQEK5"
+};
+
+        // 3. Initialize App and Database
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 4. UI Elements
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        const showMessage = (message, isError = true) => {
+            statusMessage.textContent = message;
+            statusMessage.style.display = 'block';
+            statusMessage.className = isError ? 'error' : 'success';
+            registerBtn.disabled = false;
+            if (isError) registerBtn.textContent = 'Create Account';
+        };
+
+        // 5. Custom Database Registration Logic
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            statusMessage.style.display = 'none';
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Basic Validation
+            if (password !== confirmPassword) {
+                showMessage("Passwords do not match!");
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage("Password must be at least 6 characters.");
+                return;
+            }
+
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Setting up your studio...';
+
+            try {
+                // Point directly to Collection: CreovateAi -> Document: Users
+                const docRef = doc(db, "CreovateAi", "Users");
+                
+                // First, check if the email already exists to prevent overwriting an existing account
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data()[email]) {
+                    showMessage("An account with this email already exists!");
+                    return;
+                }
+
+                // Prepare the new user's map data
+                const newUserData = {
+                    [email]: {
+                        name: fullName,
+                        password: password, // Fine for hackathon demo
+                        joined: new Date().toISOString()
+                    }
+                };
+
+                // The Magic Trick: { merge: true }
+                // This appends the new map to the existing document without deleting other users.
+                // If the "Users" document doesn't exist yet, it will create it.
+                await setDoc(docRef, newUserData, { merge: true });
+
+                // Success!
+                showMessage("Account created successfully! Redirecting...", false);
+                
+                // Auto-login the user by saving to local storage
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: email,
+                    name: fullName
+                }));
+
+                // Redirect to dashboard after 1.5 seconds
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Error writing to database:", error);
+                showMessage("Failed to create account. Check connection.");
+            }
+        });
+    </script>
+</body>
+</html>
