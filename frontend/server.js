@@ -11,59 +11,57 @@ app.use(express.json({ limit: '50mb' }));
 
 const PORT = process.env.PORT || 5000;
 
-// 1. Generate Script (OpenAI)
+// 1. Generate Script (Google Gemini API)
 app.post('/generate-script', async (req, res) => {
     const { idea, tone, language, duration } = req.body;
     const prompt = `Write a short script for a ${duration}-second video about: "${idea}". Tone: ${tone}. Language MUST be ${language}. Only output spoken words. Do not include stage directions.`;
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo", 
-                messages: [{ role: "user", content: prompt }]
+                contents: [{ parts: [{ text: prompt }] }]
             })
         });
 
         const data = await response.json();
-        if (data.choices && data.choices.length > 0) {
-            res.json({ success: true, script: data.choices[0].message.content.replace(/["*]/g, '') });
+        
+        if (data.candidates && data.candidates.length > 0) {
+            // Extract text from Gemini's response format
+            let generatedText = data.candidates[0].content.parts[0].text;
+            res.json({ success: true, script: generatedText.replace(/["*]/g, '').trim() });
         } else {
-            console.error("OpenAI Error:", data);
+            console.error("Gemini Error:", data);
             res.status(400).json({ success: false, message: "AI response failed." });
         }
     } catch (error) {
+        console.error("Server Error:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// 2. Real NLP Caption Generation (OpenAI)
+// 2. Real NLP Caption Generation (Google Gemini API)
 app.post('/generate-caption', async (req, res) => {
     const { script, platform } = req.body;
     const prompt = `You are an expert social media manager. Read this video script: "${script}". Write a highly engaging, viral caption optimized for ${platform}. Include 3-4 relevant hashtags. Only output the caption text.`;
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo", 
-                messages: [{ role: "user", content: prompt }]
+                contents: [{ parts: [{ text: prompt }] }]
             })
         });
 
         const data = await response.json();
-        if (data.choices && data.choices.length > 0) {
-            res.json({ success: true, caption: data.choices[0].message.content.replace(/["*]/g, '') });
+        
+        if (data.candidates && data.candidates.length > 0) {
+            let generatedText = data.candidates[0].content.parts[0].text;
+            res.json({ success: true, caption: generatedText.replace(/["*]/g, '').trim() });
         } else {
-            console.error("OpenAI Error:", data);
+            console.error("Gemini Error:", data);
             res.status(400).json({ success: false, message: "NLP failed." });
         }
     } catch (error) {
@@ -71,7 +69,7 @@ app.post('/generate-caption', async (req, res) => {
     }
 });
 
-// 3. Generate Video using D-ID
+// 3. Generate Video using D-ID (Unchanged)
 app.post('/generate-video', async (req, res) => {
     const { script, imageBase64, language, voice } = req.body;
 
@@ -107,7 +105,7 @@ app.post('/generate-video', async (req, res) => {
                     provider: { type: "microsoft", voice_id: voiceId }
                 },
                 config: { 
-                    stitch: true,  // <-- FIX: Replaced 'fluent: true' with 'stitch: true'
+                    stitch: true,  
                     pad_audio: 0.0 
                 }
             })
