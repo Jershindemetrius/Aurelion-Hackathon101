@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creovate | Advanced AI Studio</title>
+    
     <script>if(localStorage.getItem('creovate_theme') === 'light') document.documentElement.classList.add('light-mode');</script>
+    
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body class="theme-body">
 
@@ -35,10 +42,10 @@
             <h2>Creovate<span class="highlight">AI</span></h2>
         </div>
         <nav class="nav-menu">
-            <a href="#" class="nav-item active">🎬 Studio Pipeline</a>
-            <a href="#" class="nav-item">📚 Avatar Library</a>
-            <a href="#" class="nav-item">📊 Smart Analytics</a>
-            <a href="settings.html" class="nav-item">⚙️ Settings</a>
+            <a href="#" id="navStudio" class="nav-item active">🎬 Studio Pipeline</a>
+            <a href="#" id="navLibrary" class="nav-item">📚 Video Library</a>
+            <a href="#" id="navAnalytics" class="nav-item">📊 Smart Analytics</a>
+            <a href="#" id="navSettings" class="nav-item">⚙️ Settings</a>
         </nav>
         <div class="user-profile">
             <img src="" alt="Profile" class="user-avatar" id="sidebarAvatar" style="display: none;">
@@ -52,221 +59,303 @@
     <main class="main-content">
         <header class="topbar">
             <div>
-                <h1 class="page-title">Creator Studio Workspace</h1>
-                <p class="page-subtitle">End-to-End Workflow: AI Script → Render → Publish</p>
+                <h1 class="page-title" id="pageTitle">Creator Studio Workspace</h1>
+                <p class="page-subtitle" id="pageSubtitle">End-to-End Workflow: AI Script → Render → Publish</p>
             </div>
-            <button class="btn btn-outline hover-glow" onclick="window.location.reload()">↺ Reset Workspace</button>
+            <div class="topbar-actions">
+                <button id="themeToggle" class="btn btn-outline" title="Toggle Light/Dark Mode">🌓 Theme</button>
+                <button class="btn btn-outline hover-glow" onclick="window.location.reload()">↺ Reset Workspace</button>
+            </div>
         </header>
 
-        <div class="workspace-grid">
-            <div class="panel-column">
-                
-                <section class="card glass-panel">
-                    <div class="card-header">
-                        <div class="step-badge">1</div>
-                        <h3>AI Scripting Engine</h3>
-                    </div>
-                    <div class="input-group">
-                        <label>What is the video about?</label>
-                        <input type="text" id="ideaInput" placeholder="e.g., Explain the Creator Economy in 3 simple points...">
-                    </div>
-                    <div class="row">
-                        <div class="input-group">
-                            <label>Tone</label>
-                            <select id="tone">
-                                <option>Professional</option>
-                                <option>Energetic</option>
-                                <option>Educational & Calm</option>
-                                <option>Marketing / Sales</option>
-                            </select>
+        <div id="studioView">
+            <div class="workspace-grid">
+                <div class="panel-column">
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <div class="step-badge">1</div>
+                            <h3>AI Scripting Engine</h3>
                         </div>
                         <div class="input-group">
-                            <label>Duration</label>
-                            <select id="duration">
-                                <option value="15">15 Seconds (Shorts)</option>
-                                <option value="30">30 Seconds</option>
-                                <option value="60">60 Seconds</option>
-                            </select>
+                            <label>What is the video about?</label>
+                            <input type="text" id="ideaInput" placeholder="e.g., Explain the Creator Economy in 3 simple points...">
                         </div>
-                    </div>
-                    
-                    <button id="generateScriptBtn" class="btn btn-secondary w-100 mt-2" onclick="generateScript()">✨ Generate AI Script</button>
-                    
-                    <div class="script-container mt-3">
-                        <div class="script-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <label style="margin:0;">Generated Script</label>
-                            <button class="text-btn" onclick="openScriptModal()">🔍 Expand & Edit</button>
+                        <div class="row">
+                            <div class="input-group">
+                                <label>Tone</label>
+                                <select id="tone">
+                                    <option>Professional</option>
+                                    <option>Energetic</option>
+                                    <option>Educational & Calm</option>
+                                    <option>Marketing / Sales</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Duration</label>
+                                <select id="duration">
+                                    <option value="15">15 Seconds (Shorts)</option>
+                                    <option value="30">30 Seconds</option>
+                                    <option value="60">60 Seconds</option>
+                                </select>
+                            </div>
                         </div>
-                        <textarea id="scriptOutput" class="script-box" placeholder="Your generated script will appear here. You can type manually too."></textarea>
-                    </div>
-                </section>
+                        <button id="generateScriptBtn" class="btn btn-secondary w-100 mt-2" onclick="generateScript()">✨ Generate AI Script</button>
+                        <div class="script-container mt-3">
+                            <div class="script-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="margin:0;">Generated Script</label>
+                                <button class="text-btn" onclick="openScriptModal()">🔍 Expand & Edit</button>
+                            </div>
+                            <textarea id="scriptOutput" class="script-box" placeholder="Your generated script will appear here. You can type manually too."></textarea>
+                        </div>
+                    </section>
 
-                <section class="card glass-panel">
-                    <div class="card-header">
-                        <div class="step-badge">2</div>
-                        <h3>Digital Avatar Setup</h3>
-                    </div>
-                    <div class="avatar-controls row">
-                        <label class="btn btn-outline upload-btn" style="flex:1; text-align:center; cursor: pointer;">
-                            📁 Upload Photo
-                            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                        </label>
-                        <button class="btn btn-outline" style="flex:1;" onclick="startCamera()">📷 Use Webcam</button>
-                    </div>
-                    
-                    <div id="cameraContainer" class="camera-ui mt-2" style="display: none;">
-                        <video id="webcam" autoplay playsinline></video>
-                        <button class="btn btn-primary snap-btn glow-effect" onclick="capturePhoto()">📸 Capture Face</button>
-                        <canvas id="canvas" style="display: none;"></canvas>
-                    </div>
-                    
-                    <div id="avatarPreviewContainer" class="preview-ui mt-2" style="display: none;">
-                        <img id="avatarPreview" alt="Selected Avatar">
-                        <button class="btn btn-outline btn-sm mt-2" onclick="saveToLibrary()">💾 Save to User Library</button>
-                    </div>
-                    
-                    <div class="library-section mt-3">
-                        <label>Saved Avatars (Quick Select)</label>
-                        <div id="libraryGrid" class="avatar-grid"></div>
-                    </div>
-                </section>
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <div class="step-badge">2</div>
+                            <h3>Digital Avatar Setup</h3>
+                        </div>
+                        <div class="avatar-controls row">
+                            <label class="btn btn-outline upload-btn" style="flex:1; text-align:center; cursor: pointer;">
+                                📁 Upload Photo
+                                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                            </label>
+                            <button class="btn btn-outline" style="flex:1;" onclick="startCamera()">📷 Use Webcam</button>
+                        </div>
+                        <div id="cameraContainer" class="camera-ui mt-2" style="display: none;">
+                            <video id="webcam" autoplay playsinline></video>
+                            <button class="btn btn-primary snap-btn glow-effect" onclick="capturePhoto()">📸 Capture Face</button>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                        </div>
+                        <div id="avatarPreviewContainer" class="preview-ui mt-2" style="display: none;">
+                            <img id="avatarPreview" alt="Selected Avatar">
+                            <button class="btn btn-outline btn-sm mt-2" onclick="saveToLibrary()">💾 Save to User Library</button>
+                        </div>
+                        <div class="library-section mt-3">
+                            <label>Saved Avatars (Quick Select)</label>
+                            <div id="libraryGrid" class="avatar-grid"></div>
+                        </div>
+                    </section>
 
-                <section class="card glass-panel">
-                    <div class="card-header">
-                        <div class="step-badge">3</div>
-                        <h3>Voice & Render Settings</h3>
-                    </div>
-                    <div class="row">
-                        <div class="input-group">
-                            <label>Language</label>
-                            <select id="language" onchange="updateVoiceOptions()">
-                                <option value="English">English</option>
-                                <option value="Tamil">Tamil (தமிழ்)</option>
-                            </select>
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <div class="step-badge">3</div>
+                            <h3>Voice & Render Settings</h3>
                         </div>
-                        <div class="input-group">
-                            <label>AI Voice Model</label>
-                            <select id="voiceModel"></select>
+                        <div class="row">
+                            <div class="input-group">
+                                <label>Language</label>
+                                <select id="language" onchange="updateVoiceOptions()">
+                                    <option value="English">English</option>
+                                    <option value="Tamil">Tamil (தமிழ்)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>AI Voice Model</label>
+                                <select id="voiceModel"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="input-group">
-                            <label>Video Format</label>
-                            <select id="videoFormat">
-                                <option value="portrait">Vertical 9:16 (Reels/Shorts)</option>
-                                <option value="landscape">Landscape 16:9 (YouTube)</option>
-                                <option value="square">Square 1:1 (LinkedIn)</option>
-                            </select>
+                        <div class="row mt-2">
+                            <div class="input-group">
+                                <label>Video Format</label>
+                                <select id="videoFormat">
+                                    <option value="portrait">Vertical 9:16 (Reels/Shorts)</option>
+                                    <option value="landscape">Landscape 16:9 (YouTube)</option>
+                                    <option value="square">Square 1:1 (LinkedIn)</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <button id="generateVideoBtn" class="btn btn-primary btn-large w-100 mt-3 glow-effect" onclick="generateVideo()">🎬 Render Final Avatar Video</button>
-                </section>
-            </div>
+                        <button id="generateVideoBtn" class="btn btn-primary btn-large w-100 mt-3 glow-effect" onclick="generateVideo()">🎬 Render Final Avatar Video</button>
+                    </section>
+                </div>
 
-            <div class="panel-column sticky-column">
-                
-                <section class="card glass-panel video-player-card">
-                    <div class="card-header">
-                        <div class="step-badge">4</div>
-                        <h3>Result & Post-Production</h3>
-                    </div>
-                    
-                    <div id="videoPreview" class="player-container">
-                        <div class="placeholder-content">
-                            <span class="icon">🎥</span>
-                            <p>Your generated avatar video will appear here</p>
-                            <small style="color: var(--text-muted); opacity: 0.7;">Adapts to Vertical/Landscape</small>
+                <div class="panel-column sticky-column">
+                    <section class="card glass-panel video-player-card">
+                        <div class="card-header">
+                            <div class="step-badge">4</div>
+                            <h3>Result & Post-Production</h3>
                         </div>
-                    </div>
+                        <div id="videoPreview" class="player-container">
+                            <div class="placeholder-content">
+                                <span class="icon">🎥</span>
+                                <p>Your generated avatar video will appear here</p>
+                                <small style="color: var(--text-muted); opacity: 0.7;">Adapts to Vertical/Landscape</small>
+                            </div>
+                        </div>
+                        <div class="tools-grid mt-3">
+                            <button class="btn btn-outline tool-btn" onclick="addSubtitles()">💬 Auto-Subtitles</button>
+                            <button class="btn btn-outline tool-btn" onclick="enhanceVideo()">✨ HDR Enhance</button>
+                            <button class="btn btn-outline tool-btn" onclick="addBGM()">🎵 Add BGM</button>
+                        </div>
+                        <p id="editStatus" class="status-text"></p>
+                        <button id="downloadBtn" class="btn btn-primary w-100 mt-2 glow-effect" disabled>⬇️ Download HD Video (MP4)</button>
+                    </section>
 
-                    <div class="tools-grid mt-3">
-                        <button class="btn btn-outline tool-btn" onclick="addSubtitles()">💬 Auto-Subtitles</button>
-                        <button class="btn btn-outline tool-btn" onclick="enhanceVideo()">✨ HDR Enhance</button>
-                        <button class="btn btn-outline tool-btn" onclick="addBGM()">🎵 Add BGM</button>
-                    </div>
-                    <p id="editStatus" class="status-text"></p>
-                    <button id="downloadBtn" class="btn btn-primary w-100 mt-2 glow-effect" disabled>⬇️ Download HD Video (MP4)</button>
-                </section>
-
-                <section class="card glass-panel">
-                    <div class="card-header">
-                        <div class="step-badge">5</div>
-                        <h3>Smart Publishing</h3>
-                    </div>
-                    <div class="row">
-                        <div class="input-group">
-                            <label>Target Platform</label>
-                            <select id="socialPlatform">
-                                <option value="instagram">Instagram Reels</option>
-                                <option value="linkedin">LinkedIn Post</option>
-                                <option value="youtube">YouTube Shorts</option>
-                            </select>
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <div class="step-badge">5</div>
+                            <h3>Smart Publishing</h3>
                         </div>
-                        <div class="input-group">
-                            <label>Schedule Time</label>
-                            <input type="datetime-local" id="scheduleDate" class="date-input">
+                        <div class="row">
+                            <div class="input-group">
+                                <label>Target Platform</label>
+                                <select id="socialPlatform">
+                                    <option value="instagram">Instagram Reels</option>
+                                    <option value="linkedin">LinkedIn Post</option>
+                                    <option value="youtube">YouTube Shorts</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Schedule Time</label>
+                                <input type="text" id="scheduleDate" class="date-input" placeholder="Select Date & Time...">
+                            </div>
                         </div>
-                    </div>
-                    <div class="input-group mt-2">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <label style="margin: 0;">AI Generated Caption</label>
-                            <button class="text-btn" onclick="generateCaption()">✨ Write with NLP</button>
+                        <div class="input-group mt-2">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label style="margin: 0;">AI Generated Caption</label>
+                                <button class="text-btn" onclick="generateCaption()">✨ Write with NLP</button>
+                            </div>
+                            <textarea id="captionBox" placeholder="Optimized caption and hashtags will appear here..."></textarea>
                         </div>
-                        <textarea id="captionBox" placeholder="Optimized caption and hashtags will appear here..."></textarea>
-                    </div>
-                    <button class="btn btn-secondary w-100 mt-2" onclick="schedulePost()">🚀 Schedule Automated Post</button>
-                </section>
-
+                        <button class="btn btn-secondary w-100 mt-2" onclick="schedulePost()">🚀 Schedule Automated Post</button>
+                    </section>
+                </div>
             </div>
         </div>
+
+        <div id="libraryView" style="display: none;">
+            <section class="card glass-panel video-history-section">
+                <div class="card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 2rem;">📚</span>
+                        <h3>Your Generated Videos</h3>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('navStudio').click()">+ Create New</button>
+                </div>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Click any video to load it back into the Studio for editing, downloading, or publishing.</p>
+                <div id="videoHistoryGrid" class="history-grid"></div>
+            </section>
+        </div>
+
+        <div id="analyticsView" style="display: none;">
+            <div class="analytics-grid-top">
+                <div class="card glass-panel stat-card">
+                    <span class="stat-title">⏱ Today</span>
+                    <div class="stat-value highlight" id="todayTime">0h 0m</div>
+                </div>
+                <div class="card glass-panel stat-card">
+                    <span class="stat-title">📅 This Week</span>
+                    <div class="stat-value" id="weekTime">0h 0m</div>
+                </div>
+                <div class="card glass-panel stat-card">
+                    <span class="stat-title">🔥 Streak</span>
+                    <div class="stat-value" id="streak">0 days</div>
+                </div>
+                <div class="card glass-panel stat-card">
+                    <span class="stat-title">⏱ Live Session</span>
+                    <div class="stat-value" id="liveTimer" style="color: var(--secondary);">0h 0m 0s</div>
+                </div>
+            </div>
+
+            <div class="workspace-grid mt-3">
+                <div class="panel-column">
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <h3>📈 Weekly Activity</h3>
+                        </div>
+                        <canvas id="weekChart"></canvas>
+                    </section>
+
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <h3>🎯 Daily Goal Setting</h3>
+                        </div>
+                        <div id="goalSetArea" class="row" style="align-items: flex-end;">
+                            <div class="input-group">
+                                <label>Target Duration</label>
+                                <input type="number" id="goalInput" min="1" placeholder="e.g. 2">
+                            </div>
+                            <div class="input-group">
+                                <label>Unit</label>
+                                <select id="goalUnit">
+                                    <option value="hr">Hours</option>
+                                    <option value="min">Minutes</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <button class="btn btn-primary" onclick="saveGoal()">Set Goal</button>
+                            </div>
+                        </div>
+                        <div id="goalViewArea" class="hidden">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <strong id="goalText" style="font-size: 1.1rem;"></strong>
+                                <button class="btn btn-outline btn-sm" onclick="enableGoalEdit()">Edit Goal</button>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-fill" id="goalBar"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="panel-column">
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <h3>📅 Session Logs</h3>
+                        </div>
+                        <div id="dailyDetail" class="detail-box">Click a date below to see details</div>
+                        <div class="table-responsive mt-2">
+                            <table class="analytics-table" id="weeklyTable">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time Spent</th>
+                                </tr>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div id="settingsView" style="display: none;">
+            <div class="settings-container">
+                <section class="card glass-panel">
+                    <h2>Profile Settings</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Manage your account information and avatar.</p>
+                    <div class="profile-header">
+                        <img id="settingsAvatarPreview" src="" alt="Settings Avatar">
+                        <div>
+                            <h3 id="settingsNameDisplay">Loading...</h3>
+                            <p id="settingsEmailDisplay" style="color: var(--text-muted); font-size: 0.9rem;">Connecting to Firebase...</p>
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                <button class="btn btn-secondary btn-sm" id="changeAvatarBtn">Change Avatar</button>
+                                <input type="file" id="settingsFileInput" style="display: none;" accept="image/*">
+                                <button class="btn btn-outline btn-sm" id="removeAvatarBtn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card glass-panel mt-3">
+                    <h2>App Preferences</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Customize your Creovate experience.</p>
+                    <div class="toggle-row">
+                        <span style="font-weight: 600;">🌙 Dark Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="darkToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="toggle-row" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                        <button class="btn btn-outline w-100" id="logoutBtn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Log Out of Creovate</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
     </main>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDqOPA5Lul3NQJofyJvUQBFZb5DAPry7UM",
-        authDomain: "creovate-101.firebaseapp.com",
-        projectId: "creovate-101",
-        storageBucket: "creovate-101.firebasestorage.app",
-        messagingSenderId: "479670114683",
-        appId: "1:479670114683:web:0d5fab68e95294a94445de",
-        measurementId: "G-X2VWJZQEK5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const userStr = localStorage.getItem('currentUser');
-    
-    if (!userStr) {
-        window.location.href = "login.html"; 
-    } else {
-        const user = JSON.parse(userStr);
-        document.getElementById('sidebarName').innerText = user.name || "Creator";
-        
-        const loadProfile = async () => {
-            try {
-                const userDoc = await getDoc(doc(db, "users", user.email));
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    document.getElementById('sidebarName').innerText = data.name || user.name;
-                    document.getElementById('sidebarPlan').innerText = data.plan || "Premium Plan";
-                    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || user.name)}&background=6366f1&color=fff`;
-                    const avatarImg = document.getElementById('sidebarAvatar');
-                    avatarImg.src = data.avatar || defaultAvatar;
-                    avatarImg.style.display = "block"; 
-                }
-            } catch (error) {
-                console.error("Firebase Error:", error);
-                document.getElementById('sidebarPlan').innerText = "Database Offline";
-            }
-        };
-        loadProfile();
-    }
-</script>
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
