@@ -19,36 +19,39 @@
             <li>Analytics</li>
             <li>Settings</li>
         </ul>
+        <div class="sidebar-footer">
+            <p style="font-size: 0.8rem; color: #64748b;">AURELION 2026 Build</p>
+        </div>
     </aside>
 
     <main class="main">
         <header class="header">
             <div>
-                <h1>Create AI Video</h1>
-                <p class="subtitle">End-to-end content workflow: Idea → Script → Avatar Video.</p>
+                <h1>End-to-End Content Workflow</h1>
+                <p class="subtitle">Idea → Script → Avatar Video → Post-Production → Publish</p>
             </div>
             <button class="new-btn">+ New Project</button>
         </header>
 
         <section class="stats">
             <div class="stat-card">
-                <h3>24</h3>
-                <p>Total Videos</p>
+                <h3>142K</h3>
+                <p>Total Views (All Platforms)</p>
             </div>
             <div class="stat-card">
-                <h3>8</h3>
-                <p>Tamil Videos</p>
+                <h3>8.4%</h3>
+                <p>Avg. Engagement Rate</p>
             </div>
             <div class="stat-card">
-                <h3>99%</h3>
-                <p>Lip-Sync Accuracy</p>
+                <h3>12</h3>
+                <p>Tamil Videos Published</p>
             </div>
         </section>
 
         <div class="grid-layout">
             <div class="input-section">
                 <div class="card">
-                    <h2>1. Content Engine</h2>
+                    <h2>1. AI Scripting Engine</h2>
                     <textarea id="ideaInput" placeholder="E.g., A quick educational video on why AI avatars are the future..."></textarea>
                     
                     <div class="row">
@@ -60,7 +63,7 @@
                         </select>
                         <select id="language">
                             <option value="English">English</option>
-                            <option value="Tamil">Tamil (தமிழ்)</option>
+                            <option value="Tamil">Tamil (தமிழ்) - Common Voice</option>
                         </select>
                         <select id="duration">
                             <option value="30">30 Seconds</option>
@@ -72,8 +75,8 @@
                 </div>
 
                 <div class="card">
-                    <h2>2. Avatar Management</h2>
-                    <p class="subtitle" style="margin-bottom: 15px;">Upload, capture, or select a saved avatar.</p>
+                    <h2>2. Avatar Creation & Management</h2>
+                    <p class="subtitle" style="margin-bottom: 15px;">UGC-style realism with accessory support.</p>
                     
                     <div class="row">
                         <button id="startCameraBtn" class="secondary-btn" onclick="startCamera()">📷 Camera</button>
@@ -81,8 +84,8 @@
                     </div>
 
                     <div class="checkbox-row" style="margin-top: 10px; margin-bottom: 10px;">
-                        <input type="checkbox" id="hasCoolers">
-                        <label for="hasCoolers" class="subtitle" style="color: #f8fafc;">Optimize for Accessories (Cooling Glasses/Hats)</label>
+                        <input type="checkbox" id="hasCoolers" checked>
+                        <label for="hasCoolers" class="subtitle" style="color: #f8fafc;">Optimize for Accessories (Cooling Glasses)</label>
                     </div>
 
                     <div id="cameraContainer" style="display: none; margin-top: 15px; text-align: center;">
@@ -93,33 +96,28 @@
 
                     <div id="avatarPreviewContainer" style="display: none; margin-top: 15px; text-align: center;">
                         <img id="avatarPreview" src="" alt="Avatar Preview" style="max-width: 150px; border-radius: 8px; border: 2px solid #6366f1;">
-                        <div class="row" style="margin-top: 10px; justify-content: center;">
-                            <button class="secondary-btn" style="width: auto; margin-top:0;" onclick="saveToLibrary()">💾 Save to Library</button>
-                        </div>
+                        <button class="secondary-btn" style="margin-top: 10px;" onclick="saveToLibrary()">💾 Save to Library</button>
                     </div>
 
                     <div class="avatar-library" id="avatarLibrary" style="margin-top: 20px;">
-                        <p class="subtitle">Saved Avatars</p>
-                        <div class="library-grid" id="libraryGrid">
-                            </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p class="subtitle">Avatar Library</p>
+                            <span class="badge">Fine-tuned: VoxCeleb / LRS3</span>
+                        </div>
+                        <div class="library-grid" id="libraryGrid"></div>
                     </div>
                 </div>
             </div>
 
             <div class="output-section">
                 <div class="card">
-                    <h2>3. Generated Script</h2>
-                    <textarea id="scriptOutput" placeholder="Your generated script will appear here. Feel free to edit it before generating the video."></textarea>
+                    <h2>3. Editable Output & Format Setup</h2>
+                    <textarea id="scriptOutput" placeholder="Your generated script will appear here. Edit before generating."></textarea>
                     
                     <div class="row" style="margin-bottom: 15px;">
                         <select id="videoFormat">
-                            <option value="vertical">Vertical (9:16) - Reels/Shorts</option>
+                            <option value="vertical">Vertical (9:16) - Instagram Reels / Shorts</option>
                             <option value="square">Square (1:1) - LinkedIn</option>
-                            <option value="landscape">Landscape (16:9) - YouTube</option>
-                        </select>
-                        <select id="subtitleToggle">
-                            <option value="true">Include Subtitles</option>
-                            <option value="false">No Subtitles</option>
                         </select>
                     </div>
                     
@@ -127,12 +125,40 @@
                 </div>
 
                 <div class="card video-card">
-                    <h2>4. Final Output</h2>
+                    <h2>4. Avatar-to-Video Generation</h2>
                     <div id="videoPreview" class="video-box">
-                        <p class="placeholder-text">No video generated yet</p>
+                        <p class="placeholder-text">Video preview will appear here</p>
                     </div>
-                    <button id="downloadBtn" class="secondary-btn" disabled>Download MP4</button>
                 </div>
+            </div>
+        </div>
+
+        <div class="grid-layout" style="margin-top: 25px;">
+            <div class="card">
+                <h2>5. Manual Edit Layer</h2>
+                <p class="subtitle" style="margin-bottom: 15px;">Post-production tools.</p>
+                <div class="row">
+                    <button class="secondary-btn" onclick="mockEdit('Overlaying Subtitles...')">💬 Add Subtitles</button>
+                    <button class="secondary-btn" onclick="mockEdit('Trimming Video...')">✂️ Trim (0:00 - 0:30)</button>
+                    <button class="secondary-btn" onclick="mockEdit('Replacing Background...')">🖼️ Change BG</button>
+                </div>
+                <button id="downloadBtn" class="primary-btn" style="margin-top: 10px;" disabled>⬇️ Download MP4</button>
+                <p id="editStatus" style="color: var(--secondary); margin-top: 10px; font-size: 0.9rem;"></p>
+            </div>
+
+            <div class="card">
+                <h2>6. Social Publishing (Automated)</h2>
+                <div class="row">
+                    <select id="socialPlatform">
+                        <option value="instagram">Instagram Reels</option>
+                        <option value="youtube">YouTube Shorts</option>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                    <input type="datetime-local" id="scheduleDate" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px;">
+                </div>
+                <button class="secondary-btn" onclick="generateCaption()" style="margin-bottom: 10px;">✨ Auto-Generate Caption</button>
+                <textarea id="captionBox" placeholder="Platform-optimized caption with hashtags..." style="height: 60px;"></textarea>
+                <button class="primary-btn" onclick="schedulePost()">🚀 Schedule Post</button>
             </div>
         </div>
     </main>
