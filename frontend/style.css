@@ -48,6 +48,7 @@ body {
     background: radial-gradient(circle at top right, #e2e8f0, var(--bg-base));
 }
 
+/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: rgba(150,150,150,0.3); border-radius: 4px; }
@@ -81,11 +82,17 @@ body {
     max-width: 1500px;
 }
 
-/* --- Sidebar --- */
-.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 50px; }
-.logo-icon { width: 40px; height: 40px; object-fit: contain; background: transparent; }
-.brand h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.5px; }
-.highlight { color: var(--primary); }
+/* --- FIXED: Sidebar Logo --- */
+.brand { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 50px; 
+}
+.brand-logo-img { 
+    width: 50px; 
+    height: auto; 
+    object-fit: contain; 
+}
 
 .nav-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .nav-item {
@@ -205,16 +212,6 @@ video#webcam { width: 100%; display: block; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(40px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-
-video::cue {
-    background-color: rgba(0, 0, 0, 0.8); color: white; font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700; font-size: 1.2rem; padding: 6px 12px; border-radius: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-@media (max-width: 1200px) {
-    .workspace-grid { grid-template-columns: 1fr; }
-    .sticky-column { position: relative; top: 0; }
-}
 
 /* --- Video History Grid --- */
 .video-history-section { margin-top: 0; padding: 30px; min-height: 75vh; }

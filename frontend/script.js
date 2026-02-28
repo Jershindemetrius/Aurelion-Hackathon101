@@ -28,7 +28,7 @@ if (!userStr) {
 const user = JSON.parse(userStr);
 userDocRef = doc(db, "users", user.email);
 
-// --- DOM ELEMENTS ---
+// --- DOM Elements ---
 const cameraContainer = document.getElementById("cameraContainer");
 const webcam = document.getElementById("webcam");
 const canvas = document.getElementById("canvas");
@@ -41,7 +41,7 @@ const themeToggleBtn = document.getElementById('themeToggle');
 // --- FLATPICKR CALENDAR INIT ---
 flatpickr("#scheduleDate", {
     enableTime: true,
-    dateFormat: "Y-m-d h:i K", // e.g., 2026-02-28 04:30 PM
+    dateFormat: "Y-m-d h:i K", 
     minDate: "today",
 });
 
@@ -54,16 +54,12 @@ const initProfile = async () => {
         if (userDoc.exists()) {
             data = userDoc.data();
         } else {
-            // Setup new user document
             data = { name: user.name, email: user.email, theme: "dark", plan: "Premium Plan", avatar: "" };
             await setDoc(userDocRef, data);
         }
         
-        // Update Sidebar
         document.getElementById('sidebarName').innerText = data.name || user.name;
         document.getElementById('sidebarPlan').innerText = data.plan || "Premium Plan";
-        
-        // Update Settings Tab
         document.getElementById('settingsNameDisplay').innerText = data.name || user.name;
         document.getElementById('settingsEmailDisplay').innerText = data.email || user.email;
 
@@ -74,7 +70,6 @@ const initProfile = async () => {
         document.getElementById('sidebarAvatar').style.display = "block";
         document.getElementById('settingsAvatarPreview').src = activeAvatar;
 
-        // Theme Toggle Sync
         const darkToggle = document.getElementById('darkToggle');
         const body = document.querySelector('.theme-body');
         const root = document.documentElement;
@@ -90,7 +85,6 @@ const initProfile = async () => {
     }
 };
 initProfile();
-
 
 // --- TAB NAVIGATION LOGIC ---
 const navs = ['navStudio', 'navLibrary', 'navAnalytics', 'navSettings'];
@@ -130,7 +124,6 @@ document.getElementById('navSettings').addEventListener('click', (e) => {
     switchTab('navSettings', 'settingsView', "Account Settings", "Manage your profile, preferences, and integrations");
 });
 
-
 // --- THEME MANAGEMENT ---
 function applyTheme(isLightMode) {
     const newTheme = isLightMode ? 'light' : 'dark';
@@ -140,23 +133,15 @@ function applyTheme(isLightMode) {
     document.getElementById('darkToggle').checked = !isLightMode;
     localStorage.setItem('creovate_theme', newTheme);
     
-    // Refresh chart if visible to handle CSS variable switches
     if(document.getElementById('analyticsView').style.display === 'block') {
         loadAnalyticsData();
     }
     
-    // Save to Firebase asynchronously
     if(userDocRef) updateDoc(userDocRef, { theme: newTheme }).catch(err => console.error(err));
 }
 
-themeToggleBtn.addEventListener('click', () => {
-    applyTheme(!document.documentElement.classList.contains('light-mode'));
-});
-
-document.getElementById('darkToggle').addEventListener('change', (e) => {
-    applyTheme(!e.target.checked);
-});
-
+themeToggleBtn.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('light-mode')));
+document.getElementById('darkToggle').addEventListener('change', (e) => applyTheme(!e.target.checked));
 
 // --- SETTINGS CONTROLS ---
 document.getElementById('changeAvatarBtn').onclick = () => document.getElementById('settingsFileInput').click();
@@ -185,7 +170,6 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('creovate_theme');
     window.location.href = "login.html";
 });
-
 
 // ==========================================
 // ====== ADVANCED ANALYTICS LOGIC ==========
@@ -245,14 +229,11 @@ function toggleGoalView(hasGoal){
 }
 
 function formatTime(sec){
-    const h = Math.floor(sec/3600);
-    const m = Math.floor((sec%3600)/60);
-    const s = sec%60;
+    const h = Math.floor(sec/3600); const m = Math.floor((sec%3600)/60); const s = sec%60;
     return `${h}h ${m}m ${s}s`;
 }
 function formatShort(sec){
-    const h = Math.floor(sec/3600);
-    const m = Math.floor((sec%3600)/60);
+    const h = Math.floor(sec/3600); const m = Math.floor((sec%3600)/60);
     return `${h}h ${m}m`;
 }
 
@@ -261,14 +242,10 @@ function loadAnalyticsData(){
     const table = document.getElementById("weeklyTable");
     table.innerHTML = `<tr><th>Date</th><th>Time Spent</th></tr>`;
 
-    const labels = [];
-    const values = [];
-    let weekTotal = 0;
-    const today = new Date();
+    const labels = []; const values = []; let weekTotal = 0; const today = new Date();
 
     for(let i=6; i>=0; i--){
-        let d = new Date();
-        d.setDate(today.getDate()-i);
+        let d = new Date(); d.setDate(today.getDate()-i);
         const ds = d.toISOString().split("T")[0];
         const sec = usage[ds] || 0;
         labels.push(ds.substring(5)); 
@@ -304,21 +281,10 @@ function loadAnalyticsData(){
     if(myChart) myChart.destroy();
     myChart = new Chart(document.getElementById("weekChart").getContext('2d'), {
         type: "bar",
-        data: {
-            labels: labels,
-            datasets: [{ label: "Minutes Active", data: values, backgroundColor: isLightMode ? '#4f46e5' : '#6366f1', borderRadius: 4 }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { labels: { color: textColor } } },
-            scales: {
-                x: { ticks: { color: textColor }, grid: { display: false } },
-                y: { ticks: { color: textColor }, grid: { color: gridColor } }
-            }
-        }
+        data: { labels: labels, datasets: [{ label: "Minutes Active", data: values, backgroundColor: isLightMode ? '#4f46e5' : '#6366f1', borderRadius: 4 }] },
+        options: { responsive: true, plugins: { legend: { labels: { color: textColor } } }, scales: { x: { ticks: { color: textColor }, grid: { display: false } }, y: { ticks: { color: textColor }, grid: { color: gridColor } } } }
     });
 }
-
 
 // ==========================================
 // ====== STUDIO PIPELINE LOGIC =============
@@ -350,8 +316,7 @@ window.startCamera = async function() {
 }
 
 window.capturePhoto = function() {
-    canvas.width = webcam.videoWidth;
-    canvas.height = webcam.videoHeight;
+    canvas.width = webcam.videoWidth; canvas.height = webcam.videoHeight;
     canvas.getContext("2d").drawImage(webcam, 0, 0, canvas.width, canvas.height);
     window.setAvatar(canvas.toDataURL("image/jpeg"));
     window.stopCamera();
@@ -399,7 +364,7 @@ function updateVoiceOptions() {
     }
 }
 
-// --- SCRIPT EDITOR MODAL ---
+// Script Modal Logic
 const scriptModal = document.getElementById("scriptModal");
 const mainScriptOutput = document.getElementById("scriptOutput");
 const modalScriptOutput = document.getElementById("scriptModalOutput");
@@ -419,7 +384,9 @@ function updateWordCount() {
     wordCountDisplay.innerText = `${text ? text.split(/\s+/).length : 0} words`;
 }
 
-// --- CREOVATE APIs ---
+// ==========================================
+// ====== CORE CREOVATE APIs ================
+// ==========================================
 window.generateScript = async function() {
     const idea = document.getElementById("ideaInput").value;
     const btn = document.getElementById("generateScriptBtn");
@@ -461,12 +428,8 @@ window.generateVideo = async function() {
         if (!data.success) throw new Error(data.message || "Failed to generate video.");
 
         finalVideoUrl = data.result_url;
-        videoBox.innerHTML = `
-            <video controls playsinline preload="metadata" style="width:100%; max-height: 400px; border-radius: 8px; background: #000;">
-                <source src="${finalVideoUrl}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        `;
+        const aspectClass = format === 'portrait' ? 'video-portrait' : (format === 'square' ? 'video-square' : 'video-landscape');
+        videoBox.innerHTML = `<video class="rendered-video ${aspectClass}" controls crossorigin="anonymous" autoplay><source src="${finalVideoUrl}" type="video/mp4"></video>`;
         
         document.getElementById("downloadBtn").disabled = false;
         document.getElementById("downloadBtn").onclick = () => window.open(finalVideoUrl, "_blank");
@@ -477,7 +440,7 @@ window.generateVideo = async function() {
     } finally { btn.disabled = false; btn.innerHTML = "🎬 Render Final Avatar Video"; }
 }
 
-// --- VIDEO HISTORY LOGIC ---
+// HISTORY LOGIC
 function saveVideoToHistory(url, format) {
     savedVideos.unshift({ url, format, date: new Date().toISOString() });
     if(savedVideos.length > 15) savedVideos.pop(); 
@@ -510,18 +473,15 @@ function renderVideoHistory() {
 
 window.loadVideoIntoPlayer = function(url, format) {
     finalVideoUrl = url;
-    document.getElementById("videoPreview").innerHTML = `
-        <video controls playsinline preload="metadata" style="width:100%; max-height: 400px; border-radius: 8px; background: #000;">
-            <source src="${url}" type="video/mp4">
-        </video>
-    `;
+    const aspectClass = format === 'portrait' ? 'video-portrait' : (format === 'square' ? 'video-square' : 'video-landscape');
+    document.getElementById("videoPreview").innerHTML = `<video class="rendered-video ${aspectClass}" controls crossorigin="anonymous" autoplay><source src="${url}" type="video/mp4"></video>`;
     document.getElementById("downloadBtn").disabled = false;
     document.getElementById("downloadBtn").onclick = () => window.open(url, "_blank");
     document.getElementById("navStudio").click();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- POST-PRODUCTION ---
+// POST-PRODUCTION
 function updateStatus(message) {
     const status = document.getElementById("editStatus");
     status.innerText = message; status.style.opacity = 1;
@@ -560,7 +520,11 @@ window.addBGM = function() {
     }
 }
 
-// --- REAL NLP CAPTION GENERATOR ---
+// ==========================================
+// ====== INTEGRATED NLP & SCHEDULING =======
+// ==========================================
+
+// REAL NLP CAPTION GENERATOR 
 window.generateCaption = async function() {
     const script = mainScriptOutput.value;
     const box = document.getElementById("captionBox");
@@ -568,7 +532,7 @@ window.generateCaption = async function() {
     
     if (!script.trim()) return alert("Please generate a video script first!");
 
-    box.value = "🤖 Analyzing context with NLP (Featherless AI)...";
+    box.value = "🤖 Analyzing context with NLP (Creovate AI)...";
 
     try {
         const response = await fetch("http://localhost:5000/generate-caption", {
@@ -582,16 +546,38 @@ window.generateCaption = async function() {
         if (data.success) {
             box.value = data.caption;
         } else {
-            box.value = "⚠️ NLP Generation failed.";
+            box.value = "⚠️ " + data.message;
         }
     } catch (error) {
         box.value = "⚠️ Failed to connect to NLP Engine.";
     }
 }
 
+// ICS CALENDAR INVITE SCHEDULER
 window.schedulePost = function() {
     const dateVal = document.getElementById("scheduleDate").value;
     const platform = document.getElementById("socialPlatform").value;
-    if (!finalVideoUrl || !dateVal) return alert("Please ensure a video is selected/rendered and a date/time is picked from the calendar.");
-    alert(`✅ API Call simulated: Video successfully scheduled for ${platform.toUpperCase()} on ${dateVal} via Creovate automation!`);
+    const caption = document.getElementById("captionBox").value;
+    
+    if (!finalVideoUrl || !dateVal) return alert("Please generate a video and select a Schedule Time first!");
+
+    // Convert local date to ICS format (YYYYMMDDTHHMMSSZ)
+    const date = new Date(dateVal);
+    const startString = date.toISOString().replace(/-|:|\.\d+/g, '').substring(0, 15) + 'Z';
+    const endString = new Date(date.getTime() + 15 * 60000).toISOString().replace(/-|:|\.\d+/g, '').substring(0, 15) + 'Z'; // 15 mins later
+
+    // Build the calendar invite file contents
+    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART:${startString}\nDTEND:${endString}\nSUMMARY:Publish ${platform.toUpperCase()} Video\nDESCRIPTION:Time to post your Creovate Avatar Video!\\n\\nCaption:\\n${caption.replace(/\n/g, '\\n')}\\n\\nVideo Link:\\n${finalVideoUrl}\nEND:VEVENT\nEND:VCALENDAR`;
+
+    // Trigger download of the calendar file
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Creovate_Post_${platform}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    alert(`✅ Post Scheduled! Calendar invite downloaded.`);
 }

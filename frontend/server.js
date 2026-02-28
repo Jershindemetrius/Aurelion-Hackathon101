@@ -11,13 +11,14 @@ app.use(express.json({ limit: '50mb' }));
 
 const PORT = process.env.PORT || 5000;
 
-// 1. Generate Script (Google Gemini API)
+// 1. Generate Script (Google Gemini 2.5 Flash)
 app.post('/generate-script', async (req, res) => {
     const { idea, tone, language, duration } = req.body;
     const prompt = `Write a short script for a ${duration}-second video about: "${idea}". Tone: ${tone}. Language MUST be ${language}. Only output spoken words. Do not include stage directions.`;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+        // FIXED: Pointing to the active gemini-2.5-flash model
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -28,12 +29,13 @@ app.post('/generate-script', async (req, res) => {
         const data = await response.json();
         
         if (data.candidates && data.candidates.length > 0) {
-            // Extract text from Gemini's response format
             let generatedText = data.candidates[0].content.parts[0].text;
             res.json({ success: true, script: generatedText.replace(/["*]/g, '').trim() });
+        } else if (data.error) {
+            console.error("Gemini API Error:", data.error.message);
+            res.status(400).json({ success: false, message: `Gemini Error: ${data.error.message}` });
         } else {
-            console.error("Gemini Error:", data);
-            res.status(400).json({ success: false, message: "AI response failed." });
+            res.status(400).json({ success: false, message: "Unknown AI response failure." });
         }
     } catch (error) {
         console.error("Server Error:", error);
@@ -41,13 +43,14 @@ app.post('/generate-script', async (req, res) => {
     }
 });
 
-// 2. Real NLP Caption Generation (Google Gemini API)
+// 2. Real NLP Caption Generation (Google Gemini 2.5 Flash)
 app.post('/generate-caption', async (req, res) => {
     const { script, platform } = req.body;
     const prompt = `You are an expert social media manager. Read this video script: "${script}". Write a highly engaging, viral caption optimized for ${platform}. Include 3-4 relevant hashtags. Only output the caption text.`;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+        // FIXED: Pointing to the active gemini-2.5-flash model
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -60,16 +63,18 @@ app.post('/generate-caption', async (req, res) => {
         if (data.candidates && data.candidates.length > 0) {
             let generatedText = data.candidates[0].content.parts[0].text;
             res.json({ success: true, caption: generatedText.replace(/["*]/g, '').trim() });
+        } else if (data.error) {
+            console.error("Gemini API Error:", data.error.message);
+            res.status(400).json({ success: false, message: `Gemini Error: ${data.error.message}` });
         } else {
-            console.error("Gemini Error:", data);
-            res.status(400).json({ success: false, message: "NLP failed." });
+            res.status(400).json({ success: false, message: "Unknown NLP failure." });
         }
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// 3. Generate Video using D-ID (Unchanged)
+// 3. Generate Video using D-ID
 app.post('/generate-video', async (req, res) => {
     const { script, imageBase64, language, voice } = req.body;
 
