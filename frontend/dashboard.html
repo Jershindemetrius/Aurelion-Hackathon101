@@ -7,15 +7,16 @@
     <script>if(localStorage.getItem('creovate_theme') === 'light') document.documentElement.classList.add('light-mode');</script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="icon" href="creovate.png" type="image/png">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body class="theme-body">
 
+<!-- ═══════════════════════════════════════════
+     SCRIPT EDITOR MODAL
+═══════════════════════════════════════════ -->
 <div id="scriptModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
@@ -34,21 +35,24 @@
     </div>
 </div>
 
+<!-- ═══════════════════════════════════════════
+     MAIN LAYOUT
+═══════════════════════════════════════════ -->
 <div class="layout-container">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar glass-panel">
-        
         <div class="brand">
             <img src="Creovate.png" alt="Creovate AI" class="brand-logo-img">
         </div>
-
         <nav class="nav-menu">
-            <a href="#" id="navStudio" class="nav-item active">🎬 Studio Pipeline</a>
-            <a href="#" id="navLibrary" class="nav-item">📚 Video Library</a>
+            <a href="#" id="navStudio"    class="nav-item active">🎬 Studio Pipeline</a>
+            <a href="#" id="navLibrary"   class="nav-item">📚 Video Library</a>
             <a href="#" id="navAnalytics" class="nav-item">📊 Smart Analytics</a>
-            <a href="#" id="navSettings" class="nav-item">⚙️ Settings</a>
+            <a href="#" id="navSettings"  class="nav-item">⚙️ Settings</a>
         </nav>
         <div class="user-profile">
-            <img src="" alt="Profile" class="user-avatar" id="sidebarAvatar" style="display: none;">
+            <img src="" alt="Profile" class="user-avatar" id="sidebarAvatar" style="display:none;">
             <div class="user-info">
                 <span class="user-name" id="sidebarName">Loading Profile...</span>
                 <span class="user-plan" id="sidebarPlan">Connecting to DB...</span>
@@ -56,6 +60,7 @@
         </div>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main-content">
         <header class="topbar">
             <div>
@@ -68,25 +73,39 @@
             </div>
         </header>
 
+        <!-- ═══════════════════════════════════════════
+             STUDIO VIEW
+        ═══════════════════════════════════════════ -->
         <div id="studioView">
             <div class="workspace-grid">
+
+                <!-- LEFT COLUMN -->
                 <div class="panel-column">
+
+                    <!-- ────────────────────────────────────
+                         STEP 1: AI SCRIPTING ENGINE
+                         (Includes Voice & Render Settings)
+                    ──────────────────────────────────── -->
                     <section class="card glass-panel">
                         <div class="card-header">
                             <div class="step-badge">1</div>
                             <h3>AI Scripting Engine</h3>
                         </div>
+
+                        <!-- Content Idea -->
                         <div class="input-group">
                             <label>What is the video about?</label>
                             <input type="text" id="ideaInput" placeholder="e.g., Explain the Creator Economy in 3 simple points...">
                         </div>
+
+                        <!-- Tone + Duration -->
                         <div class="row">
                             <div class="input-group">
                                 <label>Tone</label>
                                 <select id="tone">
                                     <option>Professional</option>
                                     <option>Energetic</option>
-                                    <option>Educational & Calm</option>
+                                    <option>Educational &amp; Calm</option>
                                     <option>Marketing / Sales</option>
                                 </select>
                             </div>
@@ -99,48 +118,13 @@
                                 </select>
                             </div>
                         </div>
-                        <button id="generateScriptBtn" class="btn btn-secondary w-100 mt-2" onclick="generateScript()">✨ Generate AI Script</button>
-                        <div class="script-container mt-3">
-                            <div class="script-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="margin:0;">Generated Script</label>
-                                <button class="text-btn" onclick="openScriptModal()">🔍 Expand & Edit</button>
-                            </div>
-                            <textarea id="scriptOutput" class="script-box" placeholder="Your generated script will appear here. You can type manually too."></textarea>
-                        </div>
-                    </section>
 
-                    <section class="card glass-panel">
-                        <div class="card-header">
-                            <div class="step-badge">2</div>
-                            <h3>Digital Avatar Setup</h3>
+                        <!-- ── Voice & Render Settings (moved here) ── -->
+                        <div class="section-divider">
+                            <span>🎙️ Voice &amp; Render Settings</span>
                         </div>
-                        <div class="avatar-controls row">
-                            <label class="btn btn-outline upload-btn" style="flex:1; text-align:center; cursor: pointer;">
-                                📁 Upload Photo
-                                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                            </label>
-                            <button class="btn btn-outline" style="flex:1;" onclick="startCamera()">📷 Use Webcam</button>
-                        </div>
-                        <div id="cameraContainer" class="camera-ui mt-2" style="display: none;">
-                            <video id="webcam" autoplay playsinline></video>
-                            <button class="btn btn-primary snap-btn glow-effect" onclick="capturePhoto()">📸 Capture Face</button>
-                            <canvas id="canvas" style="display: none;"></canvas>
-                        </div>
-                        <div id="avatarPreviewContainer" class="preview-ui mt-2" style="display: none;">
-                            <img id="avatarPreview" alt="Selected Avatar">
-                            <button class="btn btn-outline btn-sm mt-2" onclick="saveToLibrary()">💾 Save to User Library</button>
-                        </div>
-                        <div class="library-section mt-3">
-                            <label>Saved Avatars (Quick Select)</label>
-                            <div id="libraryGrid" class="avatar-grid"></div>
-                        </div>
-                    </section>
 
-                    <section class="card glass-panel">
-                        <div class="card-header">
-                            <div class="step-badge">3</div>
-                            <h3>Voice & Render Settings</h3>
-                        </div>
+                        <!-- Language + AI Voice Model -->
                         <div class="row">
                             <div class="input-group">
                                 <label>Language</label>
@@ -154,31 +138,121 @@
                                 <select id="voiceModel"></select>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="input-group">
-                                <label>Video Format</label>
-                                <select id="videoFormat">
-                                    <option value="portrait">Vertical 9:16 (Reels/Shorts)</option>
-                                    <option value="landscape">Landscape 16:9 (YouTube)</option>
-                                    <option value="square">Square 1:1 (LinkedIn)</option>
-                                </select>
+
+                        <!-- Video Format -->
+                        <div class="input-group">
+                            <label>Video Format</label>
+                            <select id="videoFormat">
+                                <option value="portrait">Vertical 9:16 (Reels / Shorts)</option>
+                                <option value="landscape">Landscape 16:9 (YouTube)</option>
+                                <option value="square">Square 1:1 (LinkedIn)</option>
+                            </select>
+                        </div>
+
+                        <!-- Generate Script Button -->
+                        <button id="generateScriptBtn" class="btn btn-secondary w-100 mt-2" onclick="generateScript()">
+                            ✨ Generate AI Script
+                        </button>
+
+                        <!-- Script Output -->
+                        <div class="script-container mt-3">
+                            <div class="script-header">
+                                <label style="margin:0;">Generated Script</label>
+                                <button class="text-btn" onclick="openScriptModal()">🔍 Expand &amp; Edit</button>
+                            </div>
+                            <textarea id="scriptOutput" class="script-box" placeholder="Your generated script will appear here. You can also type manually."></textarea>
+                        </div>
+                    </section>
+
+                    <!-- ────────────────────────────────────
+                         STEP 2: DIGITAL AVATAR SETUP
+                    ──────────────────────────────────── -->
+                    <section class="card glass-panel">
+                        <div class="card-header">
+                            <div class="step-badge">2</div>
+                            <h3>Digital Avatar Setup</h3>
+                        </div>
+                        <div class="avatar-controls row">
+                            <label class="btn btn-outline upload-btn" style="flex:1; text-align:center; cursor:pointer;">
+                                📁 Upload Photo
+                                <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+                            </label>
+                            <button class="btn btn-outline" style="flex:1;" onclick="startCamera()">📷 Use Webcam</button>
+                        </div>
+
+                        <!-- Camera -->
+                        <div id="cameraContainer" class="camera-ui mt-2" style="display:none;">
+                            <video id="webcam" autoplay playsinline></video>
+                            <button class="btn btn-primary snap-btn glow-effect" onclick="capturePhoto()">📸 Capture Face</button>
+                            <canvas id="canvas" style="display:none;"></canvas>
+                        </div>
+
+                        <!-- Avatar Preview -->
+                        <div id="avatarPreviewContainer" class="preview-ui mt-2" style="display:none;">
+                            <img id="avatarPreview" alt="Selected Avatar">
+                            <button class="btn btn-outline btn-sm mt-2" onclick="saveToLibrary()">💾 Save to User Library</button>
+                        </div>
+
+                        <!-- Saved Library -->
+                        <div class="library-section mt-3">
+                            <label>Saved Avatars (Quick Select)</label>
+                            <div id="libraryGrid" class="avatar-grid"></div>
+                        </div>
+                    </section>
+
+                    <!-- ────────────────────────────────────
+                         STEP 3: RENDER
+                    ──────────────────────────────────── -->
+                    <section class="card glass-panel render-card">
+                        <div class="card-header">
+                            <div class="step-badge">3</div>
+                            <h3>Render Avatar Video</h3>
+                        </div>
+
+                        <!-- Render Summary (read-only preview) -->
+                        <div class="render-summary">
+                            <div class="summary-item">
+                                <span class="summary-label">🎙️ Voice</span>
+                                <span class="summary-value" id="summaryVoice">—</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">🌐 Language</span>
+                                <span class="summary-value" id="summaryLanguage">English</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">📐 Format</span>
+                                <span class="summary-value" id="summaryFormat">Vertical 9:16</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">⏱️ Duration</span>
+                                <span class="summary-value" id="summaryDuration">—</span>
                             </div>
                         </div>
-                        <button id="generateVideoBtn" class="btn btn-primary btn-large w-100 mt-3 glow-effect" onclick="generateVideo()">🎬 Render Final Avatar Video</button>
+
+                        <p class="render-hint">✏️ Go back to <strong>Step 1</strong> to change voice, format, or language settings.</p>
+
+                        <button id="generateVideoBtn" class="btn btn-primary btn-large w-100 mt-3 glow-effect" onclick="generateVideo()">
+                            🎬 Render Final Avatar Video
+                        </button>
                     </section>
                 </div>
 
+                <!-- RIGHT COLUMN (sticky) -->
                 <div class="panel-column sticky-column">
+
+                    <!-- ────────────────────────────────────
+                         STEP 4: RESULT & POST-PRODUCTION
+                    ──────────────────────────────────── -->
                     <section class="card glass-panel video-player-card">
                         <div class="card-header">
                             <div class="step-badge">4</div>
-                            <h3>Result & Post-Production</h3>
+                            <h3>Result &amp; Post-Production</h3>
                         </div>
                         <div id="videoPreview" class="player-container">
                             <div class="placeholder-content">
                                 <span class="icon">🎥</span>
                                 <p>Your generated avatar video will appear here</p>
-                                <small style="color: var(--text-muted); opacity: 0.7;">Adapts to Vertical/Landscape</small>
+                                <small style="color:var(--text-muted); opacity:0.7;">Adapts to Vertical / Landscape</small>
                             </div>
                         </div>
                         <div class="tools-grid mt-3">
@@ -187,9 +261,14 @@
                             <button class="btn btn-outline tool-btn" onclick="addBGM()">🎵 Add BGM</button>
                         </div>
                         <p id="editStatus" class="status-text"></p>
-                        <button id="downloadBtn" class="btn btn-primary w-100 mt-2 glow-effect" disabled>⬇️ Download HD Video (MP4)</button>
+                        <button id="downloadBtn" class="btn btn-primary w-100 mt-2 glow-effect" disabled>
+                            ⬇️ Download HD Video (MP4)
+                        </button>
                     </section>
 
+                    <!-- ────────────────────────────────────
+                         STEP 5: SMART PUBLISHING
+                    ──────────────────────────────────── -->
                     <section class="card glass-panel">
                         <div class="card-header">
                             <div class="step-badge">5</div>
@@ -206,12 +285,12 @@
                             </div>
                             <div class="input-group">
                                 <label>Schedule Time</label>
-                                <input type="text" id="scheduleDate" class="date-input" placeholder="Select Date & Time...">
+                                <input type="text" id="scheduleDate" class="date-input" placeholder="Select Date &amp; Time...">
                             </div>
                         </div>
                         <div class="input-group mt-2">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <label style="margin: 0;">AI Generated Caption</label>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <label style="margin:0;">AI Generated Caption</label>
                                 <button class="text-btn" onclick="generateCaption()">✨ Write with NLP</button>
                             </div>
                             <textarea id="captionBox" placeholder="Optimized caption and hashtags will appear here..."></textarea>
@@ -219,24 +298,31 @@
                         <button class="btn btn-secondary w-100 mt-2" onclick="schedulePost()">🚀 Schedule Automated Post</button>
                     </section>
                 </div>
+
             </div>
         </div>
 
-        <div id="libraryView" style="display: none;">
+        <!-- ═══════════════════════════════════════════
+             LIBRARY VIEW
+        ═══════════════════════════════════════════ -->
+        <div id="libraryView" style="display:none;">
             <section class="card glass-panel video-history-section">
-                <div class="card-header" style="justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 14px;">
-                        <span style="font-size: 2rem;">📚</span>
+                <div class="card-header" style="justify-content:space-between;">
+                    <div style="display:flex; align-items:center; gap:14px;">
+                        <span style="font-size:2rem;">📚</span>
                         <h3>Your Generated Videos</h3>
                     </div>
                     <button class="btn btn-outline btn-sm" onclick="document.getElementById('navStudio').click()">+ Create New</button>
                 </div>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">Click any video to load it back into the Studio for editing, downloading, or publishing.</p>
+                <p style="color:var(--text-muted); margin-bottom:20px;">Click any video to load it back into the Studio for editing, downloading, or publishing.</p>
                 <div id="videoHistoryGrid" class="history-grid"></div>
             </section>
         </div>
 
-        <div id="analyticsView" style="display: none;">
+        <!-- ═══════════════════════════════════════════
+             ANALYTICS VIEW
+        ═══════════════════════════════════════════ -->
+        <div id="analyticsView" style="display:none;">
             <div class="analytics-grid-top">
                 <div class="card glass-panel stat-card">
                     <span class="stat-title">⏱ Today</span>
@@ -252,24 +338,19 @@
                 </div>
                 <div class="card glass-panel stat-card">
                     <span class="stat-title">⏱ Live Session</span>
-                    <div class="stat-value" id="liveTimer" style="color: var(--secondary);">0h 0m 0s</div>
+                    <div class="stat-value" id="liveTimer" style="color:var(--secondary);">0h 0m 0s</div>
                 </div>
             </div>
 
             <div class="workspace-grid mt-3">
                 <div class="panel-column">
                     <section class="card glass-panel">
-                        <div class="card-header">
-                            <h3>📈 Weekly Activity</h3>
-                        </div>
+                        <div class="card-header"><h3>📈 Weekly Activity</h3></div>
                         <canvas id="weekChart"></canvas>
                     </section>
-
                     <section class="card glass-panel">
-                        <div class="card-header">
-                            <h3>🎯 Daily Goal Setting</h3>
-                        </div>
-                        <div id="goalSetArea" class="row" style="align-items: flex-end;">
+                        <div class="card-header"><h3>🎯 Daily Goal Setting</h3></div>
+                        <div id="goalSetArea" class="row" style="align-items:flex-end;">
                             <div class="input-group">
                                 <label>Target Duration</label>
                                 <input type="number" id="goalInput" min="1" placeholder="e.g. 2">
@@ -286,8 +367,8 @@
                             </div>
                         </div>
                         <div id="goalViewArea" class="hidden">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <strong id="goalText" style="font-size: 1.1rem;"></strong>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <strong id="goalText" style="font-size:1.1rem;"></strong>
                                 <button class="btn btn-outline btn-sm" onclick="enableGoalEdit()">Edit Goal</button>
                             </div>
                             <div class="progress-bar-container">
@@ -296,19 +377,13 @@
                         </div>
                     </section>
                 </div>
-
                 <div class="panel-column">
                     <section class="card glass-panel">
-                        <div class="card-header">
-                            <h3>📅 Session Logs</h3>
-                        </div>
+                        <div class="card-header"><h3>📅 Session Logs</h3></div>
                         <div id="dailyDetail" class="detail-box">Click a date below to see details</div>
                         <div class="table-responsive mt-2">
                             <table class="analytics-table" id="weeklyTable">
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Time Spent</th>
-                                </tr>
+                                <tr><th>Date</th><th>Time Spent</th></tr>
                             </table>
                         </div>
                     </section>
@@ -316,38 +391,39 @@
             </div>
         </div>
 
-        <div id="settingsView" style="display: none;">
+        <!-- ═══════════════════════════════════════════
+             SETTINGS VIEW
+        ═══════════════════════════════════════════ -->
+        <div id="settingsView" style="display:none;">
             <div class="settings-container">
                 <section class="card glass-panel">
                     <h2>Profile Settings</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Manage your account information and avatar.</p>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Manage your account information and avatar.</p>
                     <div class="profile-header">
                         <img id="settingsAvatarPreview" src="" alt="Settings Avatar">
                         <div>
                             <h3 id="settingsNameDisplay">Loading...</h3>
-                            <p id="settingsEmailDisplay" style="color: var(--text-muted); font-size: 0.9rem;">Connecting to Firebase...</p>
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <p id="settingsEmailDisplay" style="color:var(--text-muted); font-size:0.9rem;">Connecting to Firebase...</p>
+                            <div style="margin-top:15px; display:flex; gap:10px;">
                                 <button class="btn btn-secondary btn-sm" id="changeAvatarBtn">Change Avatar</button>
-                                <input type="file" id="settingsFileInput" style="display: none;" accept="image/*">
-                                <button class="btn btn-outline btn-sm" id="removeAvatarBtn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Remove</button>
+                                <input type="file" id="settingsFileInput" style="display:none;" accept="image/*">
+                                <button class="btn btn-outline btn-sm" id="removeAvatarBtn" style="color:#ef4444; border-color:rgba(239,68,68,0.3);">Remove</button>
                             </div>
                         </div>
                     </div>
                 </section>
-
                 <section class="card glass-panel mt-3">
                     <h2>App Preferences</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Customize your Creovate experience.</p>
+                    <p style="color:var(--text-muted); margin-bottom:20px;">Customize your Creovate experience.</p>
                     <div class="toggle-row">
-                        <span style="font-weight: 600;">🌙 Dark Mode</span>
+                        <span style="font-weight:600;">🌙 Dark Mode</span>
                         <label class="switch">
                             <input type="checkbox" id="darkToggle">
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
-                    <div class="toggle-row" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                        <button class="btn btn-outline w-100" id="logoutBtn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Log Out of Creovate</button>
+                    <div class="toggle-row" style="margin-top:20px; border-top:1px solid var(--border-color); padding-top:20px;">
+                        <button class="btn btn-outline w-100" id="logoutBtn" style="color:#ef4444; border-color:rgba(239,68,68,0.3);">Log Out of Creovate</button>
                     </div>
                 </section>
             </div>
