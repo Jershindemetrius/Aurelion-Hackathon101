@@ -416,14 +416,17 @@ function updateVoiceOptions() {
 
     if (language === "English") {
         voiceSelect.innerHTML = `
-            <option value="2f72ee82b83d4b00af16c4771d611752">Eric (Professional Male)</option>
-            <option value="1bd001e7e50f421d891986aad5158bc8">Sara (Clear Female)</option>
-            <option value="0f81d8db02b347b98ff2aab495e8652c">Christopher (Storyteller Male)</option>
+            <option value="en-US-JennyNeural">🇺🇸 Jenny (Female, Friendly)</option>
+            <option value="en-US-GuyNeural">🇺🇸 Guy (Male, Professional)</option>
+            <option value="en-US-AriaNeural">🇺🇸 Aria (Female, Conversational)</option>
+            <option value="en-US-DavisNeural">🇺🇸 Davis (Male, Natural)</option>
+            <option value="en-GB-SoniaNeural">🇬🇧 Sonia (Female, British)</option>
+            <option value="en-GB-RyanNeural">🇬🇧 Ryan (Male, British)</option>
         `;
     } else if (language === "Tamil") {
         voiceSelect.innerHTML = `
-            <option value="0d4f263e80d84f8db7f8e8749aeb05e6">Anjali (Clear Female)</option>
-            <option value="e131d90479ab4fb4bdfd5ab910d67664">Karthik (Deep Male)</option>
+            <option value="ta-IN-PallaviNeural">🇮🇳 பல்லவி (Pallavi - Female)</option>
+            <option value="ta-IN-ValluvarNeural">🇮🇳 வள்ளுவர் (Valluvar - Male)</option>
         `;
     }
     syncRenderSummary();
@@ -499,7 +502,7 @@ window.generateVideo = async function () {
     videoBox.innerHTML = `
         <div class="processing-container">
             <div class="loader large-loader"></div>
-            <h4 class="mt-3">Processing HeyGen Neural Avatar</h4>
+            <h4 class="mt-3">Processing Creovate AI</h4>
             <p style="color:var(--text-muted); font-size:0.9rem;">Synthesizing audio and mapping facial landmarks...</p>
         </div>`;
 
